@@ -1,4 +1,3 @@
-// app/Http/Controllers/SurveyController.php
 <?php
 
 namespace App\Http\Controllers;
@@ -44,5 +43,45 @@ class SurveyController extends Controller
 
         // Process survey responses
         dd($validatedData);
+    }
+
+    public function showFormDataEmployee()
+    {
+        // Provide any pre-populated data if needed
+        $departments = [
+            'IT' => 'Information Technology',
+            'HR' => 'Human Resources',
+            'Finance' => 'Finance Department'
+        ];
+
+        return view('survey.fichadatos', compact('departments'));
+    }
+
+    public function submitFormDataEmploye(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'department' => 'required|in:IT,HR,Finance',
+            'birthdate' => 'required|date',
+            'comments' => 'nullable|string',
+            'interests' => 'array',
+            'subscription' => 'nullable|string'
+        ]);
+
+        // Process the form data (e.g., save to database)
+        dd($validatedData); // Dump and die to show submitted data
+    }
+
+    public function showFormNotData(){
+        return view('survey.noConsentimiento');
+    }
+    
+    public function showWelcome(){
+        return view('survey.bienvenida');
+    }
+
+    public function showAdvise(){
+        return view('survey.consentimiento');
     }
 }

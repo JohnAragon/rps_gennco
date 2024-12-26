@@ -13,8 +13,21 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    <div id="content">
+                    <form action="{{ route('survey.welcome') }}" method="post" id="form1">
+                    @csrf
+                        <div class="confirmation-box">
+                                !USUARIO HABILITADO!
+                                <p align="center"><strong>Sr(a) COLINA TORRES SANTIAGO:</strong><br>
+                                Esta accediendo como empleado de la empresa <strong> GO - GESTION Y OPERACION DE LA </strong>.<br>
+                                Su cédula <strong>72008127 </strong> se encuentra habilitada para acceder a la encuesta de FACTORES DE RIESGO PSICOSOCIAL </p>
+                            </div>
 
-                    {{ __('You are logged in!') }}
+                                <input class="button round blue image-right ic-right-arrow" name="submit" type="submit" value="IR A ENCUESTA">
+
+                        </form>	
+
+                    </div>
                 </div>
             </div>
         </div>
