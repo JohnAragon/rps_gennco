@@ -1,0 +1,48 @@
+// app/Http/Controllers/SurveyController.php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class SurveyController extends Controller
+{
+    public function showSurvey()
+    {
+        $questions = [
+            [
+                'id' => 1,
+                'text' => 'How often do you exercise?',
+                'options' => [
+                    'always' => 'Always',
+                    'often' => 'Often',
+                    'hardly' => 'Hardly',
+                    'never' => 'Never'
+                ]
+            ],
+            [
+                'id' => 2,
+                'text' => 'How frequently do you eat healthy food?',
+                'options' => [
+                    'always' => 'Always',
+                    'often' => 'Often',
+                    'hardly' => 'Hardly',
+                    'never' => 'Never'
+                ]
+            ]
+        ];
+
+        return view('survey', compact('questions'));
+    }
+
+    public function submitSurvey(Request $request)
+    {
+        $validatedData = $request->validate([
+            'responses' => 'required|array',
+            'responses.*' => 'in:always,often,hardly,never'
+        ]);
+
+        // Process survey responses
+        dd($validatedData);
+    }
+}

@@ -13,6 +13,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/',function(){
+    return view('auth.login');
+})->middleware(['auth']);
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dynamic-form', [FormController::class, 'showForm'])->name('show.form');
+    Route::post('/submit-form', [FormController::class, 'submitForm'])->name('submit.form');
+
+    Route::get('/survey', [SurveyController::class, 'showSurvey'])->name('show.survey');
+    Route::post('/submit-survey', [SurveyController::class, 'submitSurvey'])->name('submit.survey');
+    Route::get('/users', [UserController::class, 'index']);
+
 });
+
+
+
