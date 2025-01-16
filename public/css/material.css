@@ -1,0 +1,142 @@
+/* public/css/material.css */
+
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #ECEFF1; /* Light grey */
+    color: #212121; /* Dark grey */
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #FFFFFF; /* White */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #0D47A1; /* Dark blue */
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #0D47A1; /* Dark blue */
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #B0BEC5; /* Grey */
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="email"]:focus {
+    border-color: #1E88E5; /* Medium blue */
+}
+
+.form-group button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #1E88E5; /* Medium blue */
+    color: #FFFFFF; /* White */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-group button:hover {
+    background-color: #1565C0; /* Darker blue */
+}
+
+.form-group span {
+    color: #D32F2F; /* Red for errors */
+    font-size: 0.875em;
+}
+
+.link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #1E88E5; /* Medium blue */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.link:hover {
+    color: #1565C0; /* Darker blue */
+}
+
+
+/* Dropdown Styles */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    text-align: left;
+}
+
+.custom-dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.custom-dropdown-menu a {
+    color: #212121;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.custom-dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-dropdown:hover .custom-dropdown-menu {
+    display: block;
+}
+
+.user-icon {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: #1E88E5;
+    color: #ffffff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+div#navbarSupportedContent {
+    justify-content: end;
+}
