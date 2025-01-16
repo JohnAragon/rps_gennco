@@ -58,9 +58,8 @@ class EmpleadoAuthController extends Controller
        
 
         if (Auth::attempt(['cedula' => $request->cedula, 'contrasena' => $request->contrasena])) {
-           
-            session(['authenticated_empleado' => Auth::guard('empleados')->user()]);
-            return redirect()->intended('/home');
+            session(['authenticated_empleado_id' => Auth::guard('empleados')->user()->registro]);
+            return redirect()->intended('/inicio');
         }
 
         return back()->withErrors([
@@ -125,7 +124,7 @@ class EmpleadoAuthController extends Controller
     }
 
     protected function redirectTo() { 
-        return '/home'; 
+        return '/inicio'; 
     }
 
 }

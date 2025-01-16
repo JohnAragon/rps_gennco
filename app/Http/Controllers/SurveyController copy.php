@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class SurveyController extends Controller
 {   
     public function index(){
-        dd(Auth::guard('empleados')->check(), Auth::guard('empleados')->user());
-
-        return view('survey.inicio');
+        return view('encuestas.inicio');
     }
 
     public function showSurvey()
@@ -39,7 +37,7 @@ class SurveyController extends Controller
             ]
         ];
 
-        return view('survey.encuesta', compact('questions'));
+        return view('encuesta.secciones', compact('questions'));
     }
 
     public function submitSurvey(Request $request)
@@ -62,7 +60,7 @@ class SurveyController extends Controller
             'Finance' => 'Finance Department'
         ];
 
-        return view('survey.fichadatos', compact('departments'));
+        return view('encuesta.fichadatos', compact('departments'));
     }
 
     public function submitFormDataEmploye(Request $request)
@@ -82,18 +80,18 @@ class SurveyController extends Controller
     }
 
     public function showFormNotData(){
-        return view('survey.noConsentimiento');
+        return view('encuesta.noConsentimiento');
     }
     
     public function showWelcome(){
-        return view('survey.bienvenida');
+        return view('encuesta.bienvenida');
     }
 
     public function showAdvise(){
-        return view('survey.consentimiento');
+        return view('encuesta.consentimiento');
     }
 
     public function showTerms(){
-        return view('survey.terminos');
+        return view('encuesta.terminos');
     }
 }
