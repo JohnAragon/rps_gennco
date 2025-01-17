@@ -16,7 +16,7 @@ use App\Http\Controllers\EncuestasController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.empleado-login');
 });
 
 
@@ -31,13 +31,14 @@ Route::get('empleado/password/reset/{token}', [EmpleadoAuthController::class, 's
 Route::post('empleado/password/reset', [EmpleadoAuthController::class, 'reset'])->name('empleado.password.update');
 
 Route::get('/inicio', [EncuestasController::class, 'index'])->name('encuesta.inicio')->middleware('auth.empleados');
+Route::get('/encuesta/advertencia', [EncuestasController::class, 'mostrarAdvertencia'])->name('encuesta.advertencia')->middleware('auth.empleados');
+Route::get('/encuesta/terminos', [EncuestasController::class, 'mostrarTerminos'])->name('encuesta.terminos')->middleware('auth.empleados');
+
 /*Route::any('/encuesta', [App\Http\Controllers\SurveyController::class, 'showSurvey'])->name('encuesta.secciones');
 Route::any('/encuesta-confirmar', [App\Http\Controllers\SurveyController::class, 'submitSurvey'])->name('encuesta.secciones');
-Route::any('/encuesta/bienvenida', [App\Http\Controllers\SurveyController::class, 'showWelcome'])->name('emcuesta.bienvenida');
 Route::any('/encuesta/consentimiento', [App\Http\Controllers\SurveyController::class, 'showAdvise'])->name('encuesta.consentimiento');
 Route::any('/encuesta/no-consentimiento', [App\Http\Controllers\SurveyController::class, 'showFormNotData'])->name('encuesta.noconsentimiento');
 Route::any('/encuesta/fichadatos', [App\Http\Controllers\SurveyController::class, 'showFormDataEmployee'])->name('encuesta.confirmada');
 Route::any('/encuesta/fichadatos-confirmar', [App\Http\Controllers\SurveyController::class, 'submitFormDataEmploye'])->name('survey.encuesta.confirm');
-Route::any('/encuesta/terminos', [App\Http\Controllers\SurveyController::class, 'showTerms'])->name('survey.terms');
 */
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth.empleados');

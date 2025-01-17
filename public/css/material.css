@@ -89,6 +89,14 @@ h1, h2, h3, h4, h5, h6 {
     color: #1565C0; /* Darker blue */
 }
 
+.center-paragraph {
+    text-align: center;
+}
+
+.justify-paragraph {
+    text-align: justify;
+}
+
 
 /* Dropdown Styles */
 .custom-dropdown {

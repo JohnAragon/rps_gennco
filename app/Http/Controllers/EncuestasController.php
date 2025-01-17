@@ -10,4 +10,13 @@ class EncuestasController extends Controller
 
         return view('encuesta.inicio');
     }
+
+    public function mostrarAdvertencia(){
+        return view('encuesta.advertencia');
+    }
+
+    public function mostrarTerminos(){
+        return view('encuesta.terminos');
+    }
+
 }
