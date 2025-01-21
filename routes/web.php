@@ -33,6 +33,12 @@ Route::post('empleado/password/reset', [EmpleadoAuthController::class, 'reset'])
 Route::get('/inicio', [EncuestasController::class, 'index'])->name('encuesta.inicio')->middleware('auth.empleados');
 Route::get('/encuesta/advertencia', [EncuestasController::class, 'mostrarAdvertencia'])->name('encuesta.advertencia')->middleware('auth.empleados');
 Route::get('/encuesta/terminos', [EncuestasController::class, 'mostrarTerminos'])->name('encuesta.terminos')->middleware('auth.empleados');
+Route::post('/encuesta/terminos/aceptar', [EncuestasController::class, 'aceptarTerminos'])->name('encuesta.terminos.aceptar')->middleware('auth.empleados');
+Route::get('/encuesta/consentimiento', [EncuestasController::class, 'mostrarConsentimiento'])->name('encuesta.consentimiento')->middleware('auth.empleados');
+Route::get('/encuesta/no-consentimiento', [EncuestasController::class, 'mostrarNoConsentimiento'])->name('encuesta.no-consentimiento')->middleware('auth.empleados');
+Route::post('/encuesta/consentimiento/aceptar', [EncuestasController::class, 'aceptarConsentimiento'])->name('encuesta.consentimiento.aceptar')->middleware('auth.empleados');
+Route::get('/encuesta/fichadatos', [EncuestasController::class, 'mostrarFichadatos'])->name('encuesta.fichadatos')->middleware('auth.empleados');
+Route::post('/encuesta/fichadaos/confirmar',[EncuestasController::class, 'confirmaFichadatos'])->name('encuesta.fichadatos.confirmar')->middleware('auth.empleados');
 
 /*Route::any('/encuesta', [App\Http\Controllers\SurveyController::class, 'showSurvey'])->name('encuesta.secciones');
 Route::any('/encuesta-confirmar', [App\Http\Controllers\SurveyController::class, 'submitSurvey'])->name('encuesta.secciones');

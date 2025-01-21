@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-header">{{ __('Ficha de datos') }}</div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('show.survey') }}">
+                            <form method="POST" action="{{ route('encuesta.fichadatos.confirma') }}">
                                 @csrf
                                 <!-- Text Input -->
                                 <input type="text" name="name" placeholder="Full Name" required>

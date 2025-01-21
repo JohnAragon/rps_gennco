@@ -4,7 +4,7 @@
   <div class="card"> 
       <div class="card-header center-paragraph">Advertencia</div>
       <div class="card-body">
-        <form  method="POST" action="" name="form-advise" id="login-advice" >
+        <form  method="POST" action="{{route('encuesta.terminos.aceptar')}}" name="form-advise" id="login-advice" >
         @csrf
           <p class="justify-paragraph"> Este cuestionario de factores psicosociales busca conocer su opinión sobre algunos aspectos de su trabajo. <br>
             Le agradecemos que usted se sirva  contestar a las preguntas de forma absolutamente sincera. Las respuestas que usted de al cuestionarío, no son ni buenas, ni malas, lo importante es que reflejen su manera de pensar sobre su trabajo. <br>
@@ -18,7 +18,7 @@
             </strong>
             <br>
             
-            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" id="terminos" onchange="activateButton(this)" required="">
+            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" value="{{config(constants.TERMINOS_SI)}}" id="terminos"  required="">
 
             <a href="{{route('encuesta.terminos')}}">
               <span>
@@ -26,7 +26,7 @@
             </span>
             </a>
             <br>
-            <input class="button" type="submit" value="Ir a la encuesta">
+            <input class="btn btn-primary" type="submit" value="Ir a la encuesta">
             <br>
           (Consentimiento informado).
           </p>
