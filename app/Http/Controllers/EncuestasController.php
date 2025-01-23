@@ -14,15 +14,15 @@ class EncuestasController extends Controller
     public function index(){
         $user = Auth::user();
 
-            if ($user->terminos === config('constants.TERMINOS_EN_ESPERA')){
+            if ($user->terminos == config('constants.TERMINOS_EN_ESPERA')){
                 return view('encuesta.inicio');
             }    
             
-            if($user->consentimiento === config('constants.CONSENTIMIENTO_EN_ESPERA')){
+            if($user->consentimiento == config('constants.CONSENTIMIENTO_EN_ESPERA')){
                 return view('encuesta.consentimiento');
             }
                 
-            if ($user->consentimiento === config('constants.CONSENTIMIENTO_SI')){
+            if ($user->consentimiento == config('constants.CONSENTIMIENTO_SI')){
                 return view('encuesta.fichadatos');
             }            
     }
@@ -47,14 +47,14 @@ class EncuestasController extends Controller
             
         }catch(ModelNotFoundException $exception){
             Log::error('Empleado no encontrado: ', $exception);
-            return back()->withError('Su registro no fue encontrado')->withInput();
+            return back()->withError(config('MENSAJE_ERROR_MODELO_NOT_FOUND'))->withInput(); 
         }
        
         return redirect()->route('encuesta.consentimiento');
     }
 
-    public function mostrarNoConsentimieto(){
-        return view('encuesta.no-consentimiento');
+    public function mostrarNoConsentimiento(){
+        return view('encuesta.finencuesta');
     }
 
     public function aceptarConsentimiento(Request $request){
@@ -69,13 +69,13 @@ class EncuestasController extends Controller
              
         }catch(ModelNotFoundException $exception){
             Log::error('Empleado no encontrado: ', $exception);
-            return back()->withError('Su registro no fue encontrado')->withInput();
+            return back()->withError(config('MENSAJE_ERROR_MODELO_NOT_FOUND'))->withInput();
         }
 
         if($request->consentimiento == config('constants.CONSENTIMIENTO_SI')){
-            return redirect()->route('encuesta.fichadatos');   
+            return redirect()->intended('/encuesta/fichadatos');   
         }else{
-           return redirect()->route('encuesta.no-consentimiento');
+          return redirect()->intended('encuesta/no-consentimiento');
     
        }
     }   
@@ -88,7 +88,7 @@ class EncuestasController extends Controller
             'Finance' => 'Finance Department'
         ];
 
-        return view('survey.fichadatos', compact('departments'));
+        return view('encuesta.fichadatos', compact('departments'));
     }
 
     public function confirmaFichadatos(){

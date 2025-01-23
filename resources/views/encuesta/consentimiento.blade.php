@@ -15,7 +15,7 @@
                     </div>
                     <div class="row">
                         <div class="col-6" >
-                            <form action="{{route(encuesta.consentimiento.aceptar)}}" method="POST" style="display: inline;">
+                            <form action="{{route('encuesta.consentimiento.aceptar')}}" method="POST" style="display: inline;">
                                 @csrf
                                 <button class="btn red btn-circle" name="consentimiento" type="submit" value="{{config('constants.CONSENTIMIENTO_NO')}}">
                                     <i class="fas fa-times"></i>  <!-- Icon for "X" -->
@@ -24,7 +24,7 @@
                             </form>
                         </div>
                         <div class="col-6">
-                            <form action="{{route(encuesta.consentimiento.aceptar)}}" method="POST" style="display: inline;">
+                            <form action="{{route('encuesta.consentimiento.aceptar')}}" method="POST" style="display: inline;">
                                 @csrf
                                 <button class="btn green btn-circle" name="consentimiento" type="submit" value="{{config('constants.CONSENTIMIENTO_SI')}}">
                                     <i class="fas fa-check"></i><!-- Icon for "Check" -->

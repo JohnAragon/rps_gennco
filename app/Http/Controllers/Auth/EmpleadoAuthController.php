@@ -46,25 +46,37 @@ class EmpleadoAuthController extends Controller
              return back()->withErrors($validator)->withInput();
          }
 
-       $credentials = $request->only('cedula', 'contrasena');
+        $credentials = $request->only('cedula', 'contrasena');
 
        // Custom authentication logic for empleados
        $empleado = Empleado::where('cedula', $credentials['cedula'])
         ->where('habilitado','habilitado')
         ->where('llave','nada')
         ->first();
+       
 
        Log::info('Empleado encontrado: ', ['empleado' => $empleado]);
        
 
-        if (Auth::attempt(['cedula' => $request->cedula, 'contrasena' => $request->contrasena])) {
+        if ($empleado && Auth::attempt(['cedula' => $credentials['cedula'], 'contrasena' => $credentials['contrasena']])) {
             session(['authenticated_empleado_id' => Auth::guard('empleados')->user()->registro]);
             return redirect()->intended('/inicio');
-        }
+        }else{
+            $empleado = Empleado::where('cedula', $request->cedula)
+            ->where('habilitado','completo')
+            ->where('llave','terminado')
+            ->first();
 
-        return back()->withErrors([
-            'cedula' => 'Los datos ingresados no coinciden con nuestros registros',
-        ]);
+            if ($empleado){
+                return back()->withErrors([
+                    'cedula' => 'El usuario registrado ya ha completado la encuesta',
+                ]); 
+            }else{
+                return back()->withErrors([
+                    'cedula' => 'Los datos ingresados no coinciden con nuestros registros',
+                ]);
+            }
+        }
     }
 
     public function logout(Request $request)
