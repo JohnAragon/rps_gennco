@@ -15,15 +15,15 @@ class EncuestasController extends Controller
         $user = Auth::user();
 
             if ($user->terminos == config('constants.TERMINOS_EN_ESPERA')){
-                return view('encuesta.inicio');
+                return redirect()->route('inicio');
             }    
             
             if($user->consentimiento == config('constants.CONSENTIMIENTO_EN_ESPERA')){
-                return view('encuesta.consentimiento');
+                return redirect()->route('encuesta.consentimiento');
             }
                 
             if ($user->consentimiento == config('constants.CONSENTIMIENTO_SI')){
-                return view('encuesta.fichadatos');
+                return redirect()->route('encuesta.fichadatos');
             }            
     }
 
@@ -38,6 +38,10 @@ class EncuestasController extends Controller
     public function mostrarConsentimiento(){
         return view('encuesta.consentimiento');
     } 
+
+    public function mostrarNoConsentimiento(){
+        return view('encuesta.finencuesta');
+    }
     
     public function aceptarTerminos(Request $request){
         $user_registro = Auth::user()->registro;
@@ -53,9 +57,7 @@ class EncuestasController extends Controller
         return redirect()->route('encuesta.consentimiento');
     }
 
-    public function mostrarNoConsentimiento(){
-        return view('encuesta.finencuesta');
-    }
+ 
 
     public function aceptarConsentimiento(Request $request){
         $user_registro = Auth::user()->registro;
@@ -73,7 +75,7 @@ class EncuestasController extends Controller
         }
 
         if($request->consentimiento == config('constants.CONSENTIMIENTO_SI')){
-            return redirect()->intended('/encuesta/fichadatos');   
+            return redirect()->route('encuesta.fichadatos');
         }else{
           return redirect()->intended('encuesta/no-consentimiento');
     

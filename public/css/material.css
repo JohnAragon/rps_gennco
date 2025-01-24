@@ -24,56 +24,8 @@ body {
     border-radius: 8px;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h5, h6 {
     color: #0D47A1; /* Dark blue */
-}
-
-.form-group {
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #0D47A1; /* Dark blue */
-}
-
-.form-group input[type="text"],
-.form-group input[type="password"],
-.form-group input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #B0BEC5; /* Grey */
-    border-radius: 4px;
-    transition: border-color 0.3s;
-}
-
-.form-group input[type="text"]:focus,
-.form-group input[type="password"]:focus,
-.form-group input[type="email"]:focus {
-    border-color: #1E88E5; /* Medium blue */
-}
-
-.form-group button {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #1E88E5; /* Medium blue */
-    color: #FFFFFF; /* White */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.form-group button:hover {
-    background-color: #1565C0; /* Darker blue */
-}
-
-.form-group span {
-    color: #D32F2F; /* Red for errors */
-    font-size: 0.875em;
 }
 
 .link {
@@ -187,4 +139,133 @@ h1, h2, h3, h4, h5, h6 {
 
 div#navbarSupportedContent {
     justify-content: end;
+}
+
+
+
+h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #3b4a6b; /* Dark blue-gray for headings */
+}
+
+h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #3b4a6b; /* Dark blue-gray for headings */
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+    flex: 1 1 calc(50% - 20px); /* Flexible width for two columns */
+    max-width: calc(50% - 20px); /* Limit width to fit two columns */
+}
+
+.form-group.full-width {
+    flex: 1 1 100%; /* Full width for single-column fields */
+    max-width: 100%;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #3b4a6b; /* Dark blue-gray for labels */
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px 12px 40px; /* Extra padding for icon */
+    border: 1px solid #d6dde5; /* Light gray-blue border */
+    border-radius: 4px;
+    background: #f8fafc; /* Light gray-blue input background */
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #3b4a6b; /* Dark blue-gray on focus */
+    background: #ffffff;
+}
+
+.form-group i {
+    position: absolute;
+    left: 10px;
+    top: 65%;
+    transform: translateY(-50%);
+    color: #9aa8bd; /* Light gray-blue for icons */
+    font-size: 16px;
+}
+
+textarea {
+    resize: none;
+    height: 100px;
+}
+
+.checkbox-group,
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.checkbox-group .option,
+.radio-group .option {
+    flex: 1 1 calc(50% - 20px); /* Divide into two columns */
+    max-width: calc(50% - 20px);
+}
+
+.checkbox-group label,
+.radio-group label {
+    font-size: 14px;
+    color: #3b4a6b; /* Dark blue-gray for labels */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-group input,
+.radio-group input {
+    margin-right: 10px;
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #3b4a6b; /* Dark blue-gray button */
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #2c3a56; /* Slightly darker blue-gray on hover */
+}
+
+@media (max-width: 600px) {
+    .form-group,
+    .checkbox-group .option,
+    .radio-group .option {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
 }
