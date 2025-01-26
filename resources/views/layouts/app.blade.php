@@ -39,7 +39,7 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('empleado.login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('empleado.login') }}">{{ __('Inicio') }}</a>
                             </li>
                         @else
                             <li class="nav-item custom-dropdown">
@@ -66,6 +66,7 @@
 
         <main class="py-4">
             @yield('content')
+            @stack('scripts')
         </main>
     </div>
 </body>

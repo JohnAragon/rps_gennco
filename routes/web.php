@@ -39,12 +39,6 @@ Route::get('/encuesta/no-consentimiento', [EncuestasController::class, 'mostrarN
 Route::post('/encuesta/consentimiento/aceptar', [EncuestasController::class, 'aceptarConsentimiento'])->name('encuesta.consentimiento.aceptar')->middleware('auth.empleados');
 Route::get('/encuesta/fichadatos', [EncuestasController::class, 'mostrarFichadatos'])->name('encuesta.fichadatos')->middleware('auth.empleados');
 Route::post('/encuesta/fichadatos/confirmar',[EncuestasController::class, 'confirmaFichadatos'])->name('encuesta.fichadatos.confirmar')->middleware('auth.empleados');
+Route::get('/encuesta/municipios/{departamento}',[EncuestasController::class, 'obtenerMunicipios'])->name('encuesta.municipios')->middleware('auth.empleados');
 
-/*Route::any('/encuesta', [App\Http\Controllers\SurveyController::class, 'showSurvey'])->name('encuesta.secciones');
-Route::any('/encuesta-confirmar', [App\Http\Controllers\SurveyController::class, 'submitSurvey'])->name('encuesta.secciones');
-Route::any('/encuesta/consentimiento', [App\Http\Controllers\SurveyController::class, 'showAdvise'])->name('encuesta.consentimiento');
-Route::any('/encuesta/no-consentimiento', [App\Http\Controllers\SurveyController::class, 'showFormNotData'])->name('encuesta.noconsentimiento');
-Route::any('/encuesta/fichadatos', [App\Http\Controllers\SurveyController::class, 'showFormDataEmployee'])->name('encuesta.confirmada');
-Route::any('/encuesta/fichadatos-confirmar', [App\Http\Controllers\SurveyController::class, 'submitFormDataEmploye'])->name('survey.encuesta.confirm');
-*/
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth.empleados');

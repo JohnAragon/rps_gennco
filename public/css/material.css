@@ -149,12 +149,6 @@ h4 {
     color: #3b4a6b; /* Dark blue-gray for headings */
 }
 
-h4 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #3b4a6b; /* Dark blue-gray for headings */
-}
-
 .form-row {
     display: flex;
     flex-wrap: wrap;
@@ -201,13 +195,29 @@ h4 {
     background: #ffffff;
 }
 
+.form-group input.read-only,
+.form-group textarea.read-only,
+.form-group select.read-only {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.form-group input.editable,
+.form-group textarea.editable,
+.form-group select.editable {
+    background-color: #eaf4ff;
+    border-color: #0056b3;
+}
+
 .form-group i {
     position: absolute;
     left: 10px;
-    top: 65%;
+    top: 60%;
     transform: translateY(-50%);
     color: #9aa8bd; /* Light gray-blue for icons */
     font-size: 16px;
+    pointer-events: none;
 }
 
 textarea {
@@ -243,6 +253,13 @@ textarea {
 .radio-group input {
     margin-right: 10px;
 }
+
+.error-message {
+    color: #d9534f;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
 
 .submit-btn {
     display: block;
