@@ -106,12 +106,15 @@ class EncuestasController extends Controller
          // All validated data
          $validatedData = $request->validated();
        
-         $additionalData = $request->only(['empresas', 'sede', 'nombre','cedula','lugartrabajodpto','lugartrabajocity', 'nombredepto', 'registro','periodo']);
-
+         $additionalData = $request->only(['empresas', 'sede', 'nombre','cedula','lugartrabajodpto','lugartrabajocity', 'nombredepto', 'registro','periodo','cargoempresa','tablacontestada']);
+         $edad = Carbon::now()->format('Y') - $validatedData['anonaci'];
+         $additionalData['edad']   = $edad;
+       
         // Merge validated and additional data
          $data = array_merge($validatedData, $additionalData);
-       
+         
         try {
+   
             // Store in the database
             Fichadato::create($data);
 

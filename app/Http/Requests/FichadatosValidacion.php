@@ -49,7 +49,7 @@ class FichadatosValidacion extends FormRequest
     public function messages(): array
     {
         return [
-            'genero.required' => 'Por favor seleccione un genero.',
+            'sexo.required' => 'Por favor seleccione un genero.',
             'anonaci.required' => 'Por favor seleccione un año de nacimiento.',
             'estadociv.required' => 'Por favor seleccione el estado civil.',
             'nivelEstudio.required' => 'Por favor seleccione el nivel de estudio.',

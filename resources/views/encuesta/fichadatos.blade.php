@@ -26,7 +26,7 @@
                                         <div class="form-group">
                                             <label for="empresas">Empresa o entidad</label>
                                             <i class="fas fa-building"></i>
-                                            <input class="read-only" id="empresas" name="empresas" type="text" placeholder="Nombre de la compañia" value="old({{Auth::user()->lugartrabajo,}}" readonly>
+                                            <input class="read-only" id="empresas" name="empresas" type="text" placeholder="Nombre de la compañia" value="{{Auth::user()->lugartrabajo}}" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label for="sede">Sede/ sucursal/ sección</label>
@@ -42,8 +42,13 @@
                                             <label for="cedula">Identificación</label>
                                             <i class="fas fa-id-card"></i>
                                             <input class="read-only" id="cedula" name="cedula" type="text" placeholder="Numero de identificación" value="{{Auth::user()->cedula}}" readonly>
-                                             <input type = "hidden" id="registro" name="registro" value="{{Auth::user()->cedula}}">
+                                             <input type = "hidden" id="registro" name="registro" value="{{Auth::user()->registro}}">
                                              <input type = "hidden" id="periodo" name="periodo" value="{{Auth::user()->periodo}}">
+                                            @if(Auth::user()->nivelSeguridad == 'A')
+                                                <input type = "hidden" id="tablacontestada" name="tablacontestada" value="a.condiciones-ambientales">
+                                            @else
+                                                <input type = "hidden" id="tablacontestada" name="tablacontestada" value="b.condiciones-ambientales">
+                                            @endIf
                                         </div>
                                         <div class="form-group checkbox-group">
                                             <div class="row" col=12>
