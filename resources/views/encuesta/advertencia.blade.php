@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
   <div class="card"> 
-      <div class="card-header center-paragraph">Advertencia</div>
+      <div class="card-header center-paragraph-bold">Advertencia</div>
       <div class="card-body">
         <form  method="POST" action="{{route('encuesta.terminos.aceptar')}}" name="form-advise" id="login-advice" >
         @csrf

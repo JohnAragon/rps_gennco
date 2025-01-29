@@ -44,11 +44,7 @@
                                             <input class="read-only" id="cedula" name="cedula" type="text" placeholder="Numero de identificación" value="{{Auth::user()->cedula}}" readonly>
                                              <input type = "hidden" id="registro" name="registro" value="{{Auth::user()->registro}}">
                                              <input type = "hidden" id="periodo" name="periodo" value="{{Auth::user()->periodo}}">
-                                            @if(Auth::user()->nivelSeguridad == 'A')
-                                                <input type = "hidden" id="tablacontestada" name="tablacontestada" value="a.condiciones-ambientales">
-                                            @else
-                                                <input type = "hidden" id="tablacontestada" name="tablacontestada" value="b.condiciones-ambientales">
-                                            @endIf
+                                            <input type = "hidden" id="tablacontestada" name="tablacontestada" value="condiciones-ambientales">
                                         </div>
                                         <div class="form-group checkbox-group">
                                             <div class="row" col=12>

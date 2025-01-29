@@ -8,6 +8,7 @@ use App\Models\Empleado;
 use App\Models\Fichadato;
 use App\Models\Departamento;
 use App\Models\Municipio;
+use App\Models\Seccion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\FichadatosValidacion;
@@ -103,22 +104,19 @@ class EncuestasController extends Controller
     }
 
     public function confirmaFichadatos(FichadatosValidacion $request){
-         // All validated data
          $validatedData = $request->validated();
        
          $additionalData = $request->only(['empresas', 'sede', 'nombre','cedula','lugartrabajodpto','lugartrabajocity', 'nombredepto', 'registro','periodo','cargoempresa','tablacontestada']);
          $edad = Carbon::now()->format('Y') - $validatedData['anonaci'];
          $additionalData['edad']   = $edad;
        
-        // Merge validated and additional data
          $data = array_merge($validatedData, $additionalData);
-         
+       
         try {
-   
-            // Store in the database
+               
             Fichadato::create($data);
 
-            return redirect()->route('encuesta.fichadatos')->with('success', '¡Sus datos fueron registrados!');
+            return redirect()->route('encuesta.preguntas', [strtolower(Auth::user()->nivelSeguridad), $data['tablacontestada']])->with('success', '¡Sus datos fueron registrados!');
         } catch (Exception $exception) {
             Log::error('Error registrando ficha datos: ', $exception);
 
@@ -133,4 +131,15 @@ class EncuestasController extends Controller
         return response()->json($municipios);
     }
 
+    public function mostrarPreguntas(Request $request){
+      
+        $secciones = Seccion::where('tipo', $request->tipo)->get();
+        $seccion = Seccion::where('tipo', $request->tipo)->where('route', $request->seccion)->first();
+        $preguntas = $seccion->preguntas(strtoupper($request->tipo))->get();
+        $proximaSeccion = $secciones->get($seccion->orden + 1)->route;
+        $tipo = $request->tipo;    
+
+        return view('encuesta.preguntas', compact('preguntas','proximaSeccion', 'tipo'));
+    }
 }
+    

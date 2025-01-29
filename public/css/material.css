@@ -45,6 +45,10 @@ h1, h2, h3, h5, h6 {
     text-align: center;
 }
 
+.center-paragraph-bold {
+    text-align: center;
+    font-weight: bold;
+}
 .justify-paragraph {
     text-align: justify;
 }
