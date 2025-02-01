@@ -9,19 +9,6 @@ class Seccion extends Model
 {
     use HasFactory;
 
-
-    public function preguntas($tipo = null)
-    {
-        switch ($tipo) {
-            case 'A':
-                return $this->hasMany(PreguntaA::class, 'seccion_id');
-            case 'B':
-                return $this->hasMany(PreguntaB::class, 'seccion_id');   
-            default:
-                return null;
-        }
-    }
-
     protected $table = 'secciones';
 
     protected $primaryKey = 'id';
@@ -37,8 +24,20 @@ class Seccion extends Model
         'tipo',
         'route',
         'rango',
-        'orden'
+        'orden', 
+        'nombre',
+        'enunciado'
     ];
 
-   
+    public function preguntas($tipo = null)
+    {
+        switch ($tipo) {
+            case 'A':
+                return $this->hasMany(PreguntaA::class, 'seccion_id');
+            case 'B':
+                return $this->hasMany(PreguntaB::class, 'seccion_id');   
+            default:
+                return null;
+        }
+    }
 }

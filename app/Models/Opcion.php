@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Opcion extends Model
+{
+    use HasFactory;
+
+    protected $table = 'opciones';
+
+    protected $primaryKey = 'id';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
+    public $timestamps = false;
+
+    protected $fillable =[
+        'id',
+        'nombre',
+    ];
+
+
+    public function preguntasA()
+    {
+        return $this->morphedByMany(PreguntaA::class, 'pregunta', 'pregunta_opcion_valor')
+                    ->withPivot('valor_id');
+    }
+
+    public function preguntasB()
+    {
+        return $this->morphedByMany(PreguntaB::class, 'pregunta', 'pregunta_opcion_valor')
+                    ->withPivot('valor_id');
+    }
+
+    public function valor()
+    {
+        
+       return $this->belongsToMany(Valor::class, 'pregunta_opcion_valor', 'opcion_id', 'valor_id')
+       ->withPivot('pregunta_id', 'pregunta_type');
+    }
+}

@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PreguntaB extends Model
+class Valor extends Model
 {
     use HasFactory;
 
-    
-    protected $table = 'preguntas_b';
+    protected $table = 'valores';
 
     protected $primaryKey = 'id';
 
@@ -22,14 +21,12 @@ class PreguntaB extends Model
 
     protected $fillable =[
         'id',
-        'seccion_id',
-        'pregunta',
+        'valor'
     ];
 
     public function opciones()
     {
-        return $this->belongsToMany(Opcion::class, 'pregunta_opcion_valor', 'pregunta_id', 'opcion_id')
-                    ->withPivot('valor_id', 'pregunta_type')
-                    ->wherePivot('pregunta_type', self::class);
+        return $this->hasMany(Opcion::class, 'valor_id');
     }
+    
 }

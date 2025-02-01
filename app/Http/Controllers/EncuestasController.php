@@ -9,7 +9,10 @@ use App\Models\Fichadato;
 use App\Models\Departamento;
 use App\Models\Municipio;
 use App\Models\Seccion;
+use App\Models\PreguntaA;
+use App\Models\PreguntaB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\FichadatosValidacion;
 
@@ -125,21 +128,87 @@ class EncuestasController extends Controller
 
     }
 
+    public function mostrarPreguntas(Request $request){
+        $fichaDato = Fichadato::where('registro', Auth::user()->registro)->first();
+        $secciones = Seccion::where('tipo', $request->tipo)->get();
+        $conteoSecciones = count($secciones);
+        $seccion = Seccion::where('tipo', $request->tipo)->where('route', $request->seccion)->first();
+        $preguntas = $this->obtenerPreguntas(strtoupper($request->tipo), $seccion->id);
+        $proximaSeccionId = $secciones->get(($seccion->orden + 1) - 1)->route;
+        $tipo = strtoupper($request->tipo); 
+        $seccionId = $seccion->id; 
+        $registro = $fichaDato->registro;
+        $empresa = $fichaDato->empresas;
+        $numeroFolio = $fichaDato->NumeroFolio;
+        $cedula = $fichaDato->cedula;
+        $periodo = $fichaDato->periodo;
+        $titulo = $seccion->nombre;
+        $enunciado = $seccion->enunciado;  
+
+        return view('encuesta.preguntas', compact('preguntas','seccionId','periodo','numeroFolio','empresa','registro','cedula','proximaSeccionId', 'tipo','titulo','enunciado'));
+    }
+
+    public function confirmarPreguntas(Request $request){
+        $fichaDato = Fichadato::where('registro', Auth::user()->registro)->first();
+     
+        $rules = [];
+        foreach ($request->except(['_token', 'tipo', 'proximaSeccionId', 'seccionId']) as $key => $value) {
+            $rules[$key] = 'required';
+        }
+    
+        $validator = Validator::make($request->all(), $rules);
+    
+        if ($validator->fails()) {
+            return redirect()->back()
+                             ->withErrors($validator)
+                             ->withInput();
+        }
+    
+        // Retrieve the seccion record
+        $seccion = Seccion::find($request->input('seccionId'));
+        if (!$seccion) {
+            return redirect()->back()
+                             ->with('error', 'Sección no encontrada.');
+        }
+    
+        // Determine the model to use based on the seccion record
+        $modelClass = $seccion->modelo; // Assuming 'modelo' is the field that stores the model name
+    
+        // Ensure the model class exists
+        if (!class_exists($modelClass)) {
+            return redirect()->back()
+                             ->with('error', 'Modelo no válido.');
+        }
+    
+        // Save the responses using the determined model
+        $data = $request->except(['_token', 'tipo', 'proximaSeccionId', 'seccionId']);
+       
+        $modelClass::create($data);
+        
+        $fichaDato->update(['tablacontestada' => $request->input('proximaSeccionId')]);
+
+    
+        // Redirect to the next section or a confirmation page
+        return redirect()->route('encuesta.preguntas', ['tipo' => $request->tipo,'seccion'=>$request->input('proximaSeccionId')])
+                         ->with('success', 'Respuestas guardadas correctamente.');
+    
+    }
+
     public function obtenerMunicipios($departamento){
         $departamento = Departamento::where('departamento', $departamento)->first();
         $municipios = Municipio::where('id_departamento', $departamento->id_departamento)->get();
         return response()->json($municipios);
     }
 
-    public function mostrarPreguntas(Request $request){
-      
-        $secciones = Seccion::where('tipo', $request->tipo)->get();
-        $seccion = Seccion::where('tipo', $request->tipo)->where('route', $request->seccion)->first();
-        $preguntas = $seccion->preguntas(strtoupper($request->tipo))->get();
-        $proximaSeccion = $secciones->get($seccion->orden + 1)->route;
-        $tipo = $request->tipo;    
-
-        return view('encuesta.preguntas', compact('preguntas','proximaSeccion', 'tipo'));
+    public function obtenerPreguntas($tipo, $seccion_id){
+    
+        if($tipo == config('constants.TIPO_A')){
+           return PreguntaA::where('seccion_id', $seccion_id)->with(['opciones.valor']) ->get();
+        }else{
+            $preguntasB = PreguntaB::where('seccion_id',$seccion_id)->with(['opciones' => function ($query) {
+                $query->with('valor');
+            }])->get();
+        }    
     }
 }
     

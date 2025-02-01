@@ -24,5 +24,12 @@ class PreguntaA extends Model
         'seccion_id',
         'pregunta',
     ];
+
+    public function opciones()
+    {
+        return $this->belongsToMany(Opcion::class, 'pregunta_opcion_valor', 'pregunta_id', 'opcion_id')
+                    ->withPivot('valor_id', 'pregunta_type')
+                    ->wherePivot('pregunta_type', self::class);
+    }
     
 }

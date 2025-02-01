@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'TIPO_A' => 'A',
+    'TIPO_B' => 'B',
     'TERMINOS_SI' => 'SI',
     'TERMINOS_EN_ESPERA'=>'EN ESPERA',
     'TERMINOS_NO' => 'NO',
