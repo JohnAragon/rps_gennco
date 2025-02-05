@@ -37,6 +37,21 @@ class Opcion extends Model
                     ->withPivot('valor_id');
     }
 
+    public function preguntasEstres()
+    {
+        return $this->morphedByMany(Estres::class, 'pregunta', 'pregunta_opcion_valor')
+                    ->withPivot('valor_id');
+    }
+
+    public function preguntasExtralaboral()
+    {
+        return $this->morphedByMany(Extralaboral::class, 'pregunta', 'pregunta_opcion_valor')
+                    ->withPivot('valor_id');
+    }
+
+
+    
+
     public function valor()
     {
         

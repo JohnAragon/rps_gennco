@@ -171,16 +171,13 @@ class EncuestasController extends Controller
                              ->with('error', 'Sección no encontrada.');
         }
     
-        // Determine the model to use based on the seccion record
-        $modelClass = $seccion->modelo; // Assuming 'modelo' is the field that stores the model name
++        $modelClass = $seccion->modelo;
     
-        // Ensure the model class exists
         if (!class_exists($modelClass)) {
             return redirect()->back()
                              ->with('error', 'Modelo no válido.');
         }
     
-        // Save the responses using the determined model
         $data = $request->except(['_token', 'tipo', 'proximaSeccionId', 'seccionId']);
        
         $modelClass::create($data);
@@ -205,9 +202,7 @@ class EncuestasController extends Controller
         if($tipo == config('constants.TIPO_A')){
            return PreguntaA::where('seccion_id', $seccion_id)->with(['opciones.valor']) ->get();
         }else{
-            $preguntasB = PreguntaB::where('seccion_id',$seccion_id)->with(['opciones' => function ($query) {
-                $query->with('valor');
-            }])->get();
+            return PreguntaB::where('seccion_id', $seccion_id)->with(['opciones.valor']) ->get();
         }    
     }
 }
