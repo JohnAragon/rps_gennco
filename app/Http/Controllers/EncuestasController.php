@@ -23,17 +23,23 @@ class EncuestasController extends Controller
     public function index(){
         $user = Auth::user();
 
-            if ($user->terminos == config('constants.TERMINOS_EN_ESPERA')){
+            if($user->terminos == config('constants.USUARIO_EN_ESPERA')){
                 return redirect()->route('inicio');
             }    
             
-            if($user->consentimiento == config('constants.CONSENTIMIENTO_EN_ESPERA')){
+            if($user->consentimiento == config('constants.USUARIO_EN_ESPERA')){
                 return redirect()->route('encuesta.consentimiento');
             }
                 
-            if ($user->consentimiento == config('constants.CONSENTIMIENTO_SI')){
+            if ($user->consentimiento == config('constants.USUARIO_CONFIRMA') && $user->fichadatos == config('constants.USUARIO_NIEGA')){
                 return redirect()->route('encuesta.fichadatos');
-            }            
+            } 
+            
+            if ($user->consentimiento == config('constants.USUARIO_CONFIRMA') && $user->fichadatos == config('constants.USUARIO_CONFIRMA')){
+                return redirect()->route('encuesta.preguntas', [strtolower($user->nivelSeguridad), $user->fichadato->tablacontestada]);
+            } 
+            
+            
     }
 
     public function mostrarAdvertencia(){
@@ -74,8 +80,8 @@ class EncuestasController extends Controller
             Empleado::where('registro',$user_registro)
                 ->update([
                         'consentimiento' => $request->input('consentimiento'),
-                        'habilitado' => config('constants.CONSENTIMIENTO_COMPLETO'),
-                        'llave' => config('constants.CONSENTIMIENTO_LLAVE')
+                        'habilitado' => config('constants.USUARIO_COMPLETO'),
+                        'llave' => config('constants.USUARIO_LLAVE')
                     ]);      
              
         }catch(ModelNotFoundException $exception){
@@ -83,7 +89,7 @@ class EncuestasController extends Controller
             return back()->withError(config('MENSAJE_ERROR_MODELO_NOT_FOUND'))->withInput();
         }
 
-        if($request->consentimiento == config('constants.CONSENTIMIENTO_SI')){
+        if($request->consentimiento == config('constants.USUARIO_CONFIRMA')){
             return redirect()->route('encuesta.fichadatos');
         }else{
           return redirect()->intended('encuesta/no-consentimiento');
@@ -131,62 +137,43 @@ class EncuestasController extends Controller
     public function mostrarPreguntas(Request $request){
         $fichaDato = Fichadato::where('registro', Auth::user()->registro)->first();
         $secciones = Seccion::where('tipo', $request->tipo)->get();
-        $conteoSecciones = count($secciones);
         $seccion = Seccion::where('tipo', $request->tipo)->where('route', $request->seccion)->first();
-        $preguntas = $this->obtenerPreguntas(strtoupper($request->tipo), $seccion->id);
-        $proximaSeccionId = $secciones->get(($seccion->orden + 1) - 1)->route;
-        $tipo = strtoupper($request->tipo); 
-        $seccionId = $seccion->id; 
-        $registro = $fichaDato->registro;
-        $empresa = $fichaDato->empresas;
-        $numeroFolio = $fichaDato->NumeroFolio;
-        $cedula = $fichaDato->cedula;
-        $periodo = $fichaDato->periodo;
-        $titulo = $seccion->nombre;
-        $enunciado = $seccion->enunciado;  
+        $preguntas = $this->obtenerPreguntas(strtoupper($request->tipo), $seccion->id, $seccion->modeloPregunta);
+        $proximaSeccionId = $secciones->get(($seccion->orden + 1) - 1)->route;  
 
-        return view('encuesta.preguntas', compact('preguntas','seccionId','periodo','numeroFolio','empresa','registro','cedula','proximaSeccionId', 'tipo','titulo','enunciado'));
+        return view('encuesta.preguntas', compact('preguntas','seccion','fichaDato', 'proximaSeccionId'));
     }
 
     public function confirmarPreguntas(Request $request){
+
+       
         $fichaDato = Fichadato::where('registro', Auth::user()->registro)->first();
      
-        $rules = [];
-        foreach ($request->except(['_token', 'tipo', 'proximaSeccionId', 'seccionId']) as $key => $value) {
-            $rules[$key] = 'required';
-        }
-    
-        $validator = Validator::make($request->all(), $rules);
-    
-        if ($validator->fails()) {
-            return redirect()->back()
-                             ->withErrors($validator)
-                             ->withInput();
-        }
-    
         // Retrieve the seccion record
         $seccion = Seccion::find($request->input('seccionId'));
         if (!$seccion) {
             return redirect()->back()
                              ->with('error', 'Sección no encontrada.');
         }
-    
-+        $modelClass = $seccion->modelo;
-    
+
+        $modelClass = $seccion->modelo;
+        
         if (!class_exists($modelClass)) {
             return redirect()->back()
                              ->with('error', 'Modelo no válido.');
         }
     
         $data = $request->except(['_token', 'tipo', 'proximaSeccionId', 'seccionId']);
-       
-        $modelClass::create($data);
         
+        $modelInfo = $modelClass::where('registro',$data['registro'])->first();
+        
+        !empty($modelInfo) ?  $modelClass::where('registro',$data['registro'])->update($data) : $modelClass::create($data);
+
         $fichaDato->update(['tablacontestada' => $request->input('proximaSeccionId')]);
 
     
         // Redirect to the next section or a confirmation page
-        return redirect()->route('encuesta.preguntas', ['tipo' => $request->tipo,'seccion'=>$request->input('proximaSeccionId')])
+        return redirect()->route('encuesta.preguntas', ['tipo' =>strtolower($request->tipo),'seccion'=>$request->input('proximaSeccionId')])
                          ->with('success', 'Respuestas guardadas correctamente.');
     
     }
@@ -197,13 +184,8 @@ class EncuestasController extends Controller
         return response()->json($municipios);
     }
 
-    public function obtenerPreguntas($tipo, $seccion_id){
-    
-        if($tipo == config('constants.TIPO_A')){
-           return PreguntaA::where('seccion_id', $seccion_id)->with(['opciones.valor']) ->get();
-        }else{
-            return PreguntaB::where('seccion_id', $seccion_id)->with(['opciones.valor']) ->get();
-        }    
+    public function obtenerPreguntas($tipo, $seccion_id, $tipoModelo){
+        return $tipoModelo::where('seccion_id', $seccion_id)->with(['opciones.valor']) ->get();
     }
 }
     

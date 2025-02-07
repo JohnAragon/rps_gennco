@@ -11,7 +11,7 @@ class Fichadato extends Model
 
     protected $table = 'fichadatos';
 
-    protected $primaryKey = 'NumeroFolio';
+    protected $primaryKey = 'registro';
 
     public $incrementing = true;
 
@@ -20,6 +20,7 @@ class Fichadato extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'NumeroFolio',
         'registro',
         'cedula',
         'empresas',
@@ -56,5 +57,9 @@ class Fichadato extends Model
         'procesos'
     ];
 
-    protected $hidden = ['NumeroFolio'];
+    public function empleado() {
+        return $this->belongsTo('App\Models\Empleado','registro','registro');
+    }
+    
+
 }

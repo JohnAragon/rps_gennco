@@ -46,4 +46,8 @@ class Empleado extends Authenticatable
     
     public function setContrasenaAttribute($value) { $this->attributes['contrasena'] = $value; }
 
+    public function fichadato() {
+        return $this->hasOne('App\Models\Fichadato','registro','registro');
+    }
+
 }

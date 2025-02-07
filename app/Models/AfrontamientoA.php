@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Extralaboral1B extends Model
+class AfrontamientoA extends Model
 {
     use HasFactory;
-    
-    protected $table = 'ext1a';
+
+    protected $table = 'afrontamientoa';
 
     protected $primaryKey = 'registro';
 
@@ -24,6 +24,9 @@ class Extralaboral1B extends Model
         'registro',
         'empresa',
         'cedula',
+        'sede'
+        'area',
+        'cargo'
         'p1',
         'p2',
         'p3',
@@ -37,6 +40,17 @@ class Extralaboral1B extends Model
         'p11',
         'p12',
         'p13',
+        'p14',
+        'p15',
+        'p16',
+        'p17',
+        'p18',
+        'p19',
+        'p20',
+        'p21',
+        'p22',
+        'p23',
         'periodo'
     ];  
+
 }

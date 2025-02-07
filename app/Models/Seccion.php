@@ -26,7 +26,9 @@ class Seccion extends Model
         'rango',
         'orden', 
         'nombre',
-        'enunciado'
+        'enunciado',
+        'modelo',
+        'modeloPregunta'
     ];
 
     public function preguntas($tipo = null)

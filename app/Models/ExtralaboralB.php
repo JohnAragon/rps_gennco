@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EstresA extends Model
+class ExtralaboralB extends Model
 {
     use HasFactory;
 
-
-    protected $table = 'estres1';
+    protected $table = 'ext2';
 
     protected $primaryKey = 'registro';
 
@@ -25,19 +24,6 @@ class EstresA extends Model
         'registro',
         'empresa',
         'cedula',
-        'p1',
-        'p2',
-        'p3',
-        'p4',
-        'p5',
-        'p6',
-        'p7',
-        'p8',
-        'p9',
-        'p10',
-        'p11',
-        'p12',
-        'p13',
         'p14',
         'p15',
         'p16',
@@ -57,13 +43,13 @@ class EstresA extends Model
         'p30',
         'p31',
         'periodo'
-    ];  
-
+    ];
+    
     public function getTable()
     {
         // Determine the table name based on the user's role
         if (auth()->user()->nivelSeguridad == config('constants.TIPO_B')) {
-            return 'estres1a';
+            return 'ext2a';
         }
 
         return $this->table;

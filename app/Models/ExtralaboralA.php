@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Extralaboral1A extends Model
+class ExtralaboralA extends Model
 {
     use HasFactory;
 
@@ -39,4 +39,15 @@ class Extralaboral1A extends Model
         'p13',
         'periodo'
     ];  
+
+
+    public function getTable()
+    {
+        // Determine the table name based on the user's role
+        if (auth()->user()->nivelSeguridad == config('constants.TIPO_B')) {
+            return 'ext1a';
+        }
+
+        return $this->table;
+    }
 }

@@ -3,13 +3,10 @@
 return [
     'TIPO_A' => 'A',
     'TIPO_B' => 'B',
-    'TERMINOS_SI' => 'SI',
-    'TERMINOS_EN_ESPERA'=>'EN ESPERA',
-    'TERMINOS_NO' => 'NO',
-    'CONSENTIMIENTO_NO' => 'NO',
-    'CONSENTIMIENTO_EN_ESPERA' => 'EN ESPERA',
-    'CONSENTIMIENTO_SI' => 'SI',
-    'CONSENTIMIENTO_COMPLETO' => 'completo',
-    'CONSENTIMIENTO_LLAVE' => 'terminado', 
+    'USUARIO_CONFIRMA' => 'SI',
+    'USUARIO_ESPERA' => 'EN ESPERA',
+    'USUARIO_NIEGA' => 'NO',
+    'USUARIO_COMPLETO' => 'completo',
+    'USUARIO_LLAVE' => 'terminado', 
     'MENSAJE_ERROR_MODELO_NOT_FOUND' =>'No se puede procesar su solicitud. Contacte al administrador.'
 ];

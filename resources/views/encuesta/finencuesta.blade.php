@@ -5,7 +5,7 @@
       <div class="card-header center-paragraph">Fin de la encuesta</div>
       <div class="card-body">
             <div class="d-flex justify-content-center">
-                @if(Auth::user()->consentimiento == config('constants.CONSENTIMIENTO_NO'))
+                @if(Auth::user()->consentimiento == config('constants.USUARIO_NIEGA'))
                     <p class="center-paragraph"> Usted ha indicado que <strong>NO </strong>desea realizar la encuesta de Factores de Riesgo Psicosocial.<br>
                     Por favor cierre la sesión</p>
                 @else 

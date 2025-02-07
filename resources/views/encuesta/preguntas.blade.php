@@ -3,7 +3,7 @@
 <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header center-paragraph-bold">Encuesta tipo {{$tipo}} - {{$titulo}}</div>
+                <div class="card-header center-paragraph-bold">Encuesta tipo {{strtoupper($seccion->tipo)}} - {{$seccion->nombre}}</div>
 
                 <div class="card-body">
                     @if (session('success'))
@@ -18,7 +18,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
-                    <h5>{{$enunciado}}</h5>
+                    <h5>{{$seccion->enunciado}}</h5>
                     <form method="POST" action="{{ route('encuesta.preguntas.confirmar')}}">
                         @csrf
                         @foreach ($preguntas as $pregunta)
@@ -33,14 +33,14 @@
                             </div>
                             <hr>
                             @endforeach
-                            <input type="hidden" name="tipo" value="{{$tipo}}">
-                            <input type="hidden" name="registro" value="{{$registro}}">
-                            <input type="hidden" name="empresa" value="{{$empresa}}">
-                            <input type="hidden" name="NumeroFolio" value="{{$numeroFolio}}">
-                            <input type="hidden" name="cedula" value="{{$cedula}}">
-                            <input type="hidden" name="periodo" value="{{$periodo}}">
+                            <input type="hidden" name="tipo" value="{{strtoupper($seccion->tipo)}}">
+                            <input type="hidden" name="registro" value="{{$fichaDato->registro}}">
+                            <input type="hidden" name="empresa" value="{{$fichaDato->empresas}}">
+                            <input type="hidden" name="NumeroFolio" value="{{$fichaDato->NumeroFolio}}">
+                            <input type="hidden" name="cedula" value="{{$fichaDato->cedula}}">
+                            <input type="hidden" name="periodo" value="{{$fichaDato->periodo}}">
                             <input type="hidden" name="proximaSeccionId" value="{{ $proximaSeccionId }}">
-                            <input type="hidden" name="seccionId" value="{{ $seccionId }}">
+                            <input type="hidden" name="seccionId" value="{{ $seccion->id }}">
                         <button type="submit">Submit Survey</button>
                     </form>
                 </div>

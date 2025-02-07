@@ -49,7 +49,17 @@ class Opcion extends Model
                     ->withPivot('valor_id');
     }
 
+    public function preguntasAfrontamiento()
+    {
+        return $this->morphedByMany(Afrontamiento::class, 'pregunta', 'pregunta_opcion_valor')
+                    ->withPivot('valor_id');
+    }
 
+    public function preguntasPersonalidad()
+    {
+        return $this->morphedByMany(Personalidad::class, 'pregunta', 'pregunta_opcion_valor')
+                    ->withPivot('valor_id');
+    }
     
 
     public function valor()
