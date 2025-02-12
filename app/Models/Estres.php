@@ -21,8 +21,9 @@ class Estres extends Model
 
     protected $fillable =[
         'id',
-        'id_seccion'
-        'pregunta'
+        'seccion_id',
+        'pregunta',
+        'orden'
     ];
 
     public function opciones()

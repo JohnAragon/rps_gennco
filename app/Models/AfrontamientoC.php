@@ -24,9 +24,10 @@ class AfrontamientoC extends Model
         'registro',
         'empresa',
         'cedula',
-        'sede'
+        'nombre',
+        'sede',
         'area',
-        'cargo'
+        'cargo',
         'p1',
         'p2',
         'p3',

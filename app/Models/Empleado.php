@@ -11,6 +11,14 @@ class Empleado extends Authenticatable
     use HasFactory, HasApiTokens;
     protected $table = 'empleados'; 
 
+    protected $primaryKey = 'registro';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
+    public $timestamps = false;
+
     protected $fillable = [
         'registro',
         'lugartrabajo',

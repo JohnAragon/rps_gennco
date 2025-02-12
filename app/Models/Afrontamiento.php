@@ -23,6 +23,7 @@ class Afrontamiento extends Model
         'id',
         'seccion_id',
         'pregunta',
+        'orden'
     ];
     
     public function opciones(){

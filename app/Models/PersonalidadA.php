@@ -24,9 +24,10 @@ class PersonalidadA extends Model
         'registro',
         'empresa',
         'cedula',
-        'sede'
+        'sede',
         'area',
-        'cargo'
+        'cargo',
+        'nombre',
         'p1',
         'p2',
         'p3',

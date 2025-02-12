@@ -23,10 +23,11 @@ class AfrontamientoA extends Model
         'NumeroFolio',
         'registro',
         'empresa',
+        'nombre',
         'cedula',
-        'sede'
+        'sede',
         'area',
-        'cargo'
+        'cargo',
         'p1',
         'p2',
         'p3',
