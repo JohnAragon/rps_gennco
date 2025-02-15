@@ -42,6 +42,3 @@ Route::post('/encuesta/fichadatos/confirmar',[EncuestasController::class, 'confi
 Route::get('/encuesta/municipios/{departamento}',[EncuestasController::class, 'obtenerMunicipios'])->name('encuesta.municipios')->middleware('auth.empleados');
 Route::get('/encuesta/preguntas/{tipo}/{seccion}',[EncuestasController::class, 'mostrarPreguntas'])->name('encuesta.preguntas')->middleware('auth.empleados');
 Route::post('/encuesta/preguntas/confirmar',[EncuestasController::class, 'confirmarPreguntas'])->name('encuesta.preguntas.confirmar')->middleware('auth.empleados');
-
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth.empleados');

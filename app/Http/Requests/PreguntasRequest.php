@@ -31,12 +31,8 @@ class PreguntasRequest extends FormRequest
        
         if ($this->incluyePreguntas) {
             $this->prefijoPreguntas = EncuestasController::obtenerPrefijoPreguntas($this->seccion->route);
-            $this->sufijoPreguntas = EncuestasController::obtenerSufijoPreguntas(request()->tipo, $this->seccion->route);
-            $this->preguntas = EncuestasController::obtenerValorPreguntas(
-                strtoupper($this->tipo),
-                $this->seccion->id,
-                $this->seccion->modeloPregunta
-            );
+            $this->sufijoPreguntas = EncuestasController::obtenerSufijoPreguntas($this->seccion->tipo, $this->seccion->route);
+            $this->preguntas = EncuestasController::obtenerValorPreguntas($this->seccion);
         }
     }
 

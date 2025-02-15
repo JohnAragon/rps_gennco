@@ -23,16 +23,16 @@ class EncuestasController extends Controller
 {
     public function index(){
         $user = Auth::user();
-
+          
             if($user->terminos == config('constants.USUARIO_ESPERA')){
-                return redirect()->route('inicio');
+                return view('encuesta.inicio');
             }    
             
             if($user->consentimiento == config('constants.USUARIO_ESPERA')){
                 return redirect()->route('encuesta.consentimiento');
             }
                 
-            if ($user->consentimiento == config('constants.USUARIO_CONFIRMA') && $user->fichadatos == config('constants.USUARIO_NIEGA')){
+            if ($user->consentimiento == config('constants.USUARIO_CONFIRMA') && $user->fichadatos == config('constants.USUARIO_ESPERA')){
                 return redirect()->route('encuesta.fichadatos');
             } 
             
@@ -140,14 +140,16 @@ class EncuestasController extends Controller
         $seccion = Seccion::where('tipo', $request->tipo)->where('route', $request->seccion)->first();
         $preguntas = [];
         $prefijoPreguntas= null;
-        $proximaSeccionId = $seccion->route != 'fin-encuesta' ? $secciones->get(($seccion->orden + 1) - 1)->route : 'fin-encuesta';  
+        $proximaSeccionId = $seccion->route != config('constants.SECCION_FIN_ENCUESTA') ? $secciones->get(($seccion->orden + 1) - 1)->route : config('constants.SECCION_FIN_ENCUESTA');  
         $incluyePreguntas = $this->esSeccionConPreguntas($seccion->route);
         
         if($incluyePreguntas){
             $prefijoPreguntas = $this->obtenerPrefijoPreguntas($seccion->route);
-            $sufijoPreguntas = $this->obtenerSufijoPreguntas($request->tipo, $seccion->route);
+            $sufijoPreguntas = $this->obtenerSufijoPreguntas($seccion->tipo, $seccion->route);
             $opciones = $this->obtenerOpcionesPreguntas($seccion->route);
-            $preguntas = $this->obtenerValorPreguntas(strtoupper($request->tipo), $seccion->id, $seccion->modeloPregunta); 
+            
+            $preguntas = $this->obtenerValorPreguntas($seccion); 
+            
             return view('encuesta.preguntas', compact('preguntas','seccion','fichaDato', 'proximaSeccionId', 'prefijoPreguntas', 'sufijoPreguntas', 'opciones'));
         }
         return view('encuesta.preguntas', compact('seccion','fichaDato', 'proximaSeccionId',));
@@ -172,11 +174,11 @@ class EncuestasController extends Controller
         try{
             if($incluyePreguntas){
             
-                $data = $this->obenterRequestData($request, $seccion->ruta);
+                $data = $this->obenterRequestData($request, $request->rutaActual);
                 
   
                 $modelClass = $seccion->modelo;
-        
+               
                 if (!class_exists($modelClass) ) {
                     return redirect()->back()
                                     ->with('error', 'Modelo no válido.');
@@ -188,7 +190,7 @@ class EncuestasController extends Controller
 
                 $fichaDato->update(['tablacontestada' => $proximaSeccionId]);
 
-                if($proximaSeccionId == 'fin-encuesta'){
+                if($proximaSeccionId == config('constants.SECCION_FIN_ENCUESTA')){
                     $empleado = Empleado::where('registro',Auth::user()->registro);
                     $empleado->update(['habilitado'=>config('constants.USUARIO_COMPLETO'),
                         'llave'=>config('constants.USUARIO_LLAVE'),
@@ -200,9 +202,11 @@ class EncuestasController extends Controller
              
             if($request->input('confirma') != null){
              
-                if($request->rutaActual == "confirma-atencion"){
-                    $proximaSeccionId = $request->input('confirma') == config('constants.USUARIO_APLICA') ? $request->input('proximaSeccionId') : 'confirma-jefe';
-                    
+                if($request->rutaActual == config('constants.SECCION_CONFIRMA_ATENCION')){
+                    $proximaSeccionId = $request->input('confirma') == config('constants.USUARIO_APLICA') ? $request->input('proximaSeccionId') : config('constants.SECCION_CONFIRMA_JEFE');
+                    if($proximaSeccionId == config('constants.SECCION_CONFIRMA_JEFE')){
+                        $proximaSeccionId = $this->aplicaEncuestaJefes($proximaSeccionId,$request->tipo);
+                    }
                     $fichaDato->update([
                         'serviciocliente' => $request->input('confirma'),
                         'tablacontestada' => $proximaSeccionId
@@ -210,9 +214,9 @@ class EncuestasController extends Controller
 
                 }
 
-                if($request->rutaActual == "confirma-jefe"){
+                if($request->rutaActual == config('constants.SECCION_CONFIRMA_JEFE')){
 
-                    $proximaSeccionId = $request->input('confirma') == config('constants.USUARIO_APLICA') ? $request->input('proximaSeccionId') : 'condiciones-vivienda';
+                    $proximaSeccionId = $request->input('confirma') == config('constants.USUARIO_APLICA') ? $request->input('proximaSeccionId') : config('constants.SECCION_CONDICIONES_VIVIENDA)');
 
                     $fichaDato->update([
                         'soyjefe' => $request->input('confirma'),
@@ -222,8 +226,6 @@ class EncuestasController extends Controller
                 }
             }
 
-            
-            
             return redirect()->route('encuesta.preguntas', ['tipo' =>strtolower($request->tipo),'seccion'=>$proximaSeccionId])
                             ->with('success', 'Respuestas guardadas correctamente.');
         } catch (Exception $exception) {
@@ -239,8 +241,9 @@ class EncuestasController extends Controller
         return response()->json($municipios);
     }
 
-    public function obtenerValorPreguntas($tipo, $seccion_id, $tipoModelo){
-        $preguntas = $tipoModelo::where('seccion_id', $seccion_id)->with(['opciones.valor'])->orderBy('orden','asc')->get();
+    public function obtenerValorPreguntas($seccion){
+    
+        $preguntas = self::obtenerQueryPreguntas($seccion->tipo, $seccion->id, $seccion->modeloPregunta,$seccion->route);
         $preguntas->each(function ($pregunta) {
             $pregunta->opciones->each(function ($opcion) {
                 $valor = $opcion->valor->firstWhere('id', $opcion->pivot->valor_id); 
@@ -254,13 +257,13 @@ class EncuestasController extends Controller
 
     public function esSeccionConPreguntas ($ruta){
         switch($ruta){
-            case 'confirma-jefe':
+            case config('constants.SECCION_CONFIRMA_JEFE'):
                 return false;
 
-            case 'confirma-atencion':
+            case config('config.SECCION_CONFIRMA_ATENCION'):
                 return false;
                 
-            case 'fin-encuesta':
+            case config('constants.SECCION_FIN_ENCUESTA'):
                     return false; 
             
             default : 
@@ -270,13 +273,13 @@ class EncuestasController extends Controller
 
     public function obtenerPrefijoPreguntas ($ruta){
         switch($ruta){
-            case 'condiciones-vivienda':
+            case config('constants.SECCION_CONDICIONES_VIVIENDA'):
                 return 'ext';
 
-            case 'condiciones-extralaborales':
+            case config('constants.SECCION_CONDICIONES_EXTRA'):
                 return 'ext';    
             
-            case 'sintomas-estres':
+            case config('constants.SECCION_ESTRES'):
                 return 'estres';        
             
             default : 
@@ -284,8 +287,9 @@ class EncuestasController extends Controller
         }        
     }
 
+
     public function obtenerSufijoPreguntas ($tipo , $ruta){
-        if($tipo == config('constants.TIPO_B') && $ruta == 'sintomas-estres'){
+        if($tipo == config('constants.TIPO_B') && $ruta == config('constants.SECCION_ESTRES')){
             return "a";
         }
         return null;        
@@ -293,25 +297,25 @@ class EncuestasController extends Controller
 
     public function obtenerOpcionesPreguntas ($ruta){
        switch($ruta){
-            case 'sintomas-estres':
+            case config('constants.SECCION_ESTRES'):
                 return  Opcion::whereIn('id', [1, 2, 6, 5])
                 ->orderBy('orden', 'asc')
                 ->get();
-            case 'afrontamiento-seccion-I':
+            case config('constants.SECCION_AFRONTAMIENTO_I'):
                 return  Opcion::whereIn('id', [6, 7, 5, 4, 2, 1])
                 ->orderBy('orden', 'desc')
                 ->get();
 
-            case 'afrontamiento-seccion-II':
+            case config('constants.SECCION_AFRONTAMIENTO_II'):
                 return  Opcion::whereIn('id', [6, 7, 5, 4, 2, 1])
                 ->orderBy('orden', 'desc')
                 ->get(); 
                 
-            case 'afrontamiento-seccion-III':
+            case config('constants.SECCION_AFRONTAMIENTO_III'):
                 return  Opcion::whereIn('id', [6, 7, 5, 4, 2, 1])
                 ->orderBy('orden', 'desc')
                 ->get(); 
-            case 'personalidad':
+            case config('constants.SECCION_PERSONALIDAD'):
                 return  Opcion::whereIn('id', [8,9])
                 ->orderBy('orden', 'asc')
                 ->get();   
@@ -325,32 +329,34 @@ class EncuestasController extends Controller
     }
 
     public function obtenerFinPreguntas($ruta){
-        
+
         $tieneAfrontamiento = $this->validarEncuestaAdicional(Auth::user()->afrontamiento);
         $tienePersonalidad = $this->validarEncuestaAdicional(Auth::user()->adicional);
 
-        if($ruta == 'sintomas-estres' && $tieneAfrontamiento){
-            return 'afrontamiento-seccion-I';
+        if($ruta == config('constants.SECCION_AFRONTAMIENTO_I')){
+            
+            if($tieneAfrontamiento && $tienePersonalidad){
+                return config('constants.SECCION_AFRONTAMIENTO_I');
+            }
+
+            else if (!$tieneAfrontamiento && $tienePersonalidad){
+                return config('constants.SECCION_PERSONALIDAD');
+            }
+
+            else if (!$tieneAfrontamiento && !$tienePersonalidad){
+                return config('constants.SECCION_FIN_ENCUESTA');
+            }
+        }
+        
+        if($ruta == config('constants.SECCION_PERSONALIDAD')){
+            if($tienePersonalidad){
+                return config('constants.SECCION_PERSONALIDAD');
+            }else{
+                return config('constants.SECCION_FIN_ENCUESTA');
+            }
         }
 
-        else if ($ruta == 'sintomas-estres' && $tienePersonalidad){
-            return 'personalidad';
-        }
-
-        else if ($ruta == 'afrontamiento-seccion-III' && $tienePersonalidad){
-            return 'personalidad';
-        }
-
-        else if ($ruta == 'afrontamiento-seccion-III' && !$tienePersonalidad){
-            return 'fin-encuesta';
-        }
-
-        else if ($ruta != 'sintomas-estres'){
-            return $ruta;
-        }
-
-        return 'fin-encuesta';
-
+        return $ruta;
     }
     
     public function validarEncuestaAdicional ($ruta){
@@ -367,32 +373,73 @@ class EncuestasController extends Controller
     }
 
     public function obenterRequestData(Request $request, $ruta){
-        $coincidencia = null;
+        
         switch($ruta){
-            case 'afrontamiento-seccion-I':
+            case config('constants.SECCION_AFRONTAMIENTO_I'):
                 $coincidencia ='afrontamiento';
-
-            case 'afrontamiento-seccion-II':
-                return false;    
-            
-                
-            case 'afrontamiento-seccion-III':
+                break;
+            case config('constants.SECCION_AFRONTAMIENTO_II'):
+                $coincidencia ='afrontamiento';  
+                break;
+            case config('constants.SECCION_AFRONTAMIENTO_III'):
                 $coincidencia ='afrontamiento';
-                
-            case 'personalidad':
+                break;
+            case config('constants.SECCION_PERSONALIDAD'):
                 $coincidencia ='personalidad';    
-            
+                break;
             default : 
                 $coincidencia =null;
         } 
 
-        if ($coincidencia != null && str_contains($seccion->route, $coincidencia) != false ) {
-            $data = $request->except(['_token', 'tipo', 'proximaSeccionId','rutaActual','confirma','sede','area','cargo','nombre']);
-        }  else{
-            $data = $request->except(['_token', 'tipo', 'proximaSeccionId','rutaActual','confirma']);
+        if ($coincidencia == 'afrontamiento') {
+            return $request->except(['_token', 'tipo', 'proximaSeccionId','rutaActual','confirma']);
+        }    
+        else if ($coincidencia == 'personalidad'){
+            return $request->except(['_token', 'tipo', 'proximaSeccionId','rutaActual','confirma']);
+        }else {  
+            return $request->except(['_token', 'tipo', 'proximaSeccionId','rutaActual','confirma','sede','area','cargo','nombre']);
         }
 
-       return $data;
+    }
+
+    public function aplicaEncuestaJefes($proximaSeccionId, $tipo){
+        if($tipo == config('constants.TIPO_B')){
+            return config('constants.SECCION_CONDICIONES_VIVIENDA');
+        }else{
+            return $proximaSeccionId;
+        }
+    }
+
+    public function obtenerQueryPreguntas($tipo, $seccion_id, $tipoModelo, $ruta){
+        if($tipo == config('constants.TIPO_B')){
+            switch ($ruta) {
+                case config('constants.SECCION_CONDICIONES_VIVIENDA') :
+                    return $tipoModelo::where('seccion_id', config('constants.ID_SECCION_EXT_CONDICIONES_VIVIENDA'))->with(['opciones.valor'])->orderBy('orden','asc')->get();
+
+                case config('constants.SECCION_CONDICIONES_EXTRA') :
+                     return $tipoModelo::where('seccion_id', config('constants.ID_SECCION_EXT_CONDICIONES_EXTRALABORAL'))->with(['opciones.valor'])->orderBy('orden','asc')->get();
+
+                case config('constants.SECCION_ESTRES') :
+                    return $tipoModelo::where('seccion_id', config('constants.ID_SECCION_ESTRES'))->with(['opciones.valor'])->orderBy('orden','asc')->get();
+
+                case config('constants.SECCION_AFRONTAMIENTO_I') :
+                    return $tipoModelo::where('seccion_id', config('constants.ID_SECCION_AFRONTAMIENTO_I'))->with(['opciones.valor'])->orderBy('orden','asc')->get();
+                
+                case config('constants.SECCION_AFRONTAMIENTO_II') :
+                    return $tipoModelo::where('seccion_id', config('constants.ID_SECCION_AFRONTAMIENTO_II'))->with(['opciones.valor'])->orderBy('orden','asc')->get(); 
+                
+                case config('constants.SECCION_AFRONTAMIENTO_III') :
+                    return $tipoModelo::where('seccion_id', config('constants.ID_SECCION_AFRONTAMIENTO_III'))->with(['opciones.valor'])->orderBy('orden','asc')->get();     
+            
+                case config('constants.SECCION_PERSONALIDAD') :
+                    return $tipoModelo::where('seccion_id', config('constants.ID_SECCION_PERSONALIDAD'))->with(['opciones.valor'])->orderBy('orden','asc')->get();    
+                
+                default: 
+                  return $tipoModelo::where('seccion_id', $seccion_id)->with(['opciones.valor'])->orderBy('orden','asc')->get();
+            }   
+        }
+        
+        return $tipoModelo::where('seccion_id', $seccion_id)->with(['opciones.valor'])->orderBy('orden','asc')->get();
     }
 }
     

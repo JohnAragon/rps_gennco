@@ -23038,7 +23038,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('#residenciadepto').change(functio
       success: function success(data) {
         jquery__WEBPACK_IMPORTED_MODULE_1___default()('#residenciaciudad').empty().append('<option value="" selected disable>Seleccione municipio</option>');
         data.forEach(function (residenciaciudad) {
-          jquery__WEBPACK_IMPORTED_MODULE_1___default()('#residenciaciudad').append("<option value=\"".concat(residenciaciudad.municipio, "\">").concat(residenciaciudad.municipio, "</option>"));
+          jquery__WEBPACK_IMPORTED_MODULE_1___default()('#residenciaciudad').append("<option value=\"".concat(residenciaciudad.municipio, "\" {{old('residenciaciudad') == '").concat(residenciaciudad.municipio, "'? 'selected' : ''}}>").concat(residenciaciudad.municipio, "</option>"));
         });
         jquery__WEBPACK_IMPORTED_MODULE_1___default()('#residenciaciudad').prop('disabled', false).trigger('change');
       },

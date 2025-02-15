@@ -9,7 +9,7 @@ class CapacitacionB extends Model
 {
     use HasFactory;
 
-    protected $table = 'a9';
+    protected $table = '9b';
 
     protected $primaryKey = 'registro';
 
@@ -28,5 +28,5 @@ class CapacitacionB extends Model
         'p47',
         'p48',
         'periodo'
-    ];c    
+    ];  
 }

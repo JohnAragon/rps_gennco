@@ -24,7 +24,7 @@ class RelacionColaboradoresB extends Model
         'registro',
         'empresa',
         'cedula',
-        'P62'
+        'p62',
         'p63',
         'p64',
         'p65',

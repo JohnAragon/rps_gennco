@@ -18,7 +18,7 @@
             </strong>
             <br>
             
-            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" value="{{config(constants.USUARIO_CONFIRMA)}}" id="terminos"  required="">
+            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" value="{{config('constants.USUARIO_CONFIRMA')}}" id="terminos"  required="" checked>
 
             <a href="{{route('encuesta.terminos')}}">
               <span>

@@ -9,7 +9,7 @@ class RelacionJefesB extends Model
 {
     use HasFactory;
 
-    protected $table = 'a10';
+    protected $table = '10b';
 
     protected $primaryKey = 'registro';
 
@@ -32,11 +32,11 @@ class RelacionJefesB extends Model
         'p54',
         'p55',
         'p56',
-        'P57',
-        'P58',
-        'P59',
+        'p57',
+        'p58',
+        'p59',
         'p60',
-        'P61',
+        'p61',
         'periodo'
     ];
 }
