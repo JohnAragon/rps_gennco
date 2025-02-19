@@ -7,6 +7,7 @@ import { createApp } from 'vue';
 
 require('./bootstrap');
 
+ window.Swal = require('sweetaalert2')
 
 /**
  * The following block of code may be used to automatically register your
@@ -33,6 +34,8 @@ window.$ = $;
 import 'select2/dist/css/select2.css';
 
 import 'select2';
+
+
 
 $('.select2').select2({
     placeholder: "Select an option",

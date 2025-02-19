@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-md-6">
+<div class="row justify-content-center centered-view">
+    <div class="col-md-8">
         <div class="container">
             <div class="card"> 
                 <div class="card-header center-paragraph">Fin de la encuesta</div>
@@ -13,7 +13,7 @@
                     <div class="d-flex justify-content-center">
                         <form action="{{ route('empleado.logout') }}" method="POST">
                             @csrf  
-                            <input class="btn btn-primary" type="submit" value="Salir">
+                            <input class="submit-btn" type="submit" value="Salir">
                         </form>
                     </div>
                 </div>     

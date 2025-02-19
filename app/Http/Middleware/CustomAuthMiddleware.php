@@ -24,7 +24,7 @@ class CustomAuthMiddleware
             $empleado = Empleado::where('registro',$registro)->first();
             if ($empleado) { 
                 Auth::guard('empleados')->setUser($empleado); 
-                \Log::info('Usuario atenticado en el middleware: ' . $empleado->cedula); } 
+                \Log::info('Usuario autenticado en el middleware: ' . $empleado->cedula); } 
             } 
             if (Auth::guard('empleados')->check()) { 
                 return $next($request); 

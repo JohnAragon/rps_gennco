@@ -12,16 +12,11 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-
-
 class EmpleadoAuthController extends Controller
 {
-
-    // Login
     public function showLoginForm()
     {
         return view('auth.empleado-login');
-
     }
 
     public function __construct()
@@ -31,47 +26,48 @@ class EmpleadoAuthController extends Controller
 
     public function login(Request $request)
     {
-        Log::info('Login attempt: ', $request->all());
 
-        // Define validation rules
-         $rules = [
-             'cedula' => ['required', 'string', 'min:4', 'max:20'], // Customize rules as needed
-             'contrasena' => ['required', 'string','min:4','max:20'], // Minimum password length of 
-         ];
+        $rules = [
+            'cedula' => ['required', 'string', 'min:4', 'max:20'],
+            'contrasena' => ['required', 'string', 'min:4', 'max:20'],
+        ];
 
-         // Validate the request
-         $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
 
-         if ($validator->fails()) {
-             return back()->withErrors($validator)->withInput();
-         }
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
 
         $credentials = $request->only('cedula', 'contrasena');
 
-       // Custom authentication logic for empleados
-       $empleado = Empleado::where('cedula', $credentials['cedula'])
-        ->where('habilitado','habilitado')
-        ->where('llave','nada')
-        ->first();
-       
+        $empleado = Empleado::where([
+            'cedula' => $credentials['cedula'],
+            'contrasena' => $credentials['contrasena'],
+            'habilitado' => 'habilitado',
+            'llave' => 'nada'
+        ])->first();
 
-       Log::info('Empleado encontrado: ', ['empleado' => $empleado]);
-       
+        Log::info('Empleado encontrado: ', ['empleado' => $empleado]);
 
-        if ($empleado && Auth::attempt(['cedula' => $credentials['cedula'], 'contrasena' => $credentials['contrasena']])) {
-            session(['authenticated_empleado_id' => Auth::guard('empleados')->user()->registro]);
+        if ($empleado && Auth::attempt([
+            'cedula' => $credentials['cedula'], 
+            'contrasena' => $credentials['contrasena'],
+            'registro' => $empleado['registro']
+        ])) {
+            session(['authenticated_empleado_id' => $empleado->registro]);
             return redirect()->intended('/inicio');
-        }else{
+        } else {
             $empleado = Empleado::where('cedula', $request->cedula)
-            ->where('habilitado','completo')
-            ->where('llave','terminado')
-            ->first();
+                ->where('contrasena', $request->contrasena)
+                ->where('habilitado', 'completo')
+                ->where('llave', 'terminado')
+                ->first();
 
-            if ($empleado){
+            if ($empleado) {
                 return back()->withErrors([
                     'cedula' => 'El usuario registrado ya ha completado la encuesta',
-                ]); 
-            }else{
+                ]);
+            } else {
                 return back()->withErrors([
                     'cedula' => 'Los datos ingresados no coinciden con nuestros registros',
                 ]);
@@ -88,7 +84,6 @@ class EmpleadoAuthController extends Controller
         return redirect('/empleado/login');
     }
 
-    // Password Reset
     public function showLinkRequestForm()
     {
         return view('auth.empleado-password-request');
@@ -96,10 +91,13 @@ class EmpleadoAuthController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        $request->validate(['cedula' => 'required|string|exists:empleados,cedula']);
+        $request->validate([
+            'cedula' => 'required|string|exists:empleados,cedula',
+            'contrasena' => 'required|string|exists:empleados,contrasena'
+        ]);
 
         $status = Password::sendResetLink(
-            $request->only('cedula')
+            $request->only('cedula', 'contrasena')
         );
 
         return $status === Password::RESET_LINK_SENT
@@ -135,8 +133,8 @@ class EmpleadoAuthController extends Controller
             : back()->withErrors(['cedula' => [__($status)]]);
     }
 
-    protected function redirectTo() { 
-        return '/inicio'; 
+    protected function redirectTo()
+    {
+        return '/inicio';
     }
-
 }

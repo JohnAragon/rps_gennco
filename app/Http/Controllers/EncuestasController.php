@@ -23,8 +23,9 @@ class EncuestasController extends Controller
 {
     public function index(){
         $user = Auth::user();
-          
+        
             if($user->terminos == config('constants.USUARIO_ESPERA')){
+               
                 return view('encuesta.inicio');
             }    
             
@@ -170,7 +171,7 @@ class EncuestasController extends Controller
         $proximaSeccionId = $this->obtenerFinPreguntas($request->input('proximaSeccionId'));
 
         $incluyePreguntas = $this->esSeccionConPreguntas($request->rutaActual);
-      
+       
         try{
             if($incluyePreguntas){
             
@@ -259,15 +260,16 @@ class EncuestasController extends Controller
         switch($ruta){
             case config('constants.SECCION_CONFIRMA_JEFE'):
                 return false;
-
-            case config('config.SECCION_CONFIRMA_ATENCION'):
+             
+            case config('constants.SECCION_CONFIRMA_ATENCION'):
                 return false;
-                
+              
             case config('constants.SECCION_FIN_ENCUESTA'):
-                    return false; 
+                return false; 
             
             default : 
                 return true;
+            
         }        
     }
 

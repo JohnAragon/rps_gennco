@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
-<div class="container">
+<div class="row justify-content-center centered-view">
+<div class="col-md-8">
   <div class="card"> 
       <div class="card-header center-paragraph-bold">Advertencia</div>
       <div class="card-body">
@@ -18,7 +19,7 @@
             </strong>
             <br>
             
-            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" value="{{config('constants.USUARIO_CONFIRMA')}}" id="terminos"  required="" checked>
+            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" value="{{config('constants.USUARIO_CONFIRMA')}}" id="terminos"  required="">
 
             <a href="{{route('encuesta.terminos')}}">
               <span>
@@ -26,7 +27,7 @@
             </span>
             </a>
             <br>
-            <input class="btn btn-primary" type="submit" value="Ir a la encuesta">
+            <input class="submit-btn" type="submit" value="Ir a la encuesta">
             <br>
           (Consentimiento informado).
           </p>
@@ -40,5 +41,6 @@
         </form>
       </div>
   </div>
+</div>
 </div>
 @endsection  

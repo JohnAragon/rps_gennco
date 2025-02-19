@@ -1,11 +1,10 @@
 @extends('layouts.app')
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
+    <div class="row justify-content-center centered-view">
             <div class="col-md-10">
                 <div class="card">
-                    <div class="card-header" class="center-paragraph">Ficha de datos</div>
-                        <div class="card-body">
+                    <div class="card-header center-paragraph-bold" class="center-paragraph">Ficha de datos</div>
+                        <div class="card-body center-content" >
                             <p class="justify-content">Las siguientes son algunas preguntas que se refieren a información general de usted o su
                                 ocupación.<br>
                                 <form action="{{route('encuesta.fichadatos.confirmar')}}" method="POST">
@@ -305,7 +304,6 @@
                 </div>
             </div>
         </div>
-    </div> 
 @endsection    
 @push('scripts')
         <script src="{{ asset('js/ocultar-errores.js') }}"></script>

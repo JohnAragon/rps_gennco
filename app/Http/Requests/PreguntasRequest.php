@@ -28,7 +28,6 @@ class PreguntasRequest extends FormRequest
                           ->first();
             
         $this->incluyePreguntas = EncuestasController::esSeccionConPreguntas($this->seccion->route);
-       
         if ($this->incluyePreguntas) {
             $this->prefijoPreguntas = EncuestasController::obtenerPrefijoPreguntas($this->seccion->route);
             $this->sufijoPreguntas = EncuestasController::obtenerSufijoPreguntas($this->seccion->tipo, $this->seccion->route);

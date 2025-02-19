@@ -16,11 +16,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const radioButtons = document.querySelectorAll('input[type="radio"]');
 
+    const radioButtonsQuestions = document.querySelectorAll('input[type="radio"]');
+
     radioButtons.forEach(radio => {
         // Add event listener for changes (when a radio button is clicked)
         radio.addEventListener('change', function() {
             // Remove error message when the user selects an option
             const errorElement = radio.closest('.form-group').querySelector('.error-message');
+            if (errorElement) {
+                errorElement.remove();
+            }
+        });
+    });
+
+    radioButtonsQuestions.forEach(radio => {
+        // Add event listener for changes (when a radio button is clicked)
+        radio.addEventListener('change', function() {
+            // Remove error message when the user selects an option
+            const errorElement = radio.closest('.error-row').querySelector('.error-message');
             if (errorElement) {
                 errorElement.remove();
             }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="container">
+<div class="row justify-content-center centered-view">
     <div class="col-md-6">
         <div class="card">
             <div class="card-header center-paragraph-bold">Consentimiento</div>
@@ -34,5 +34,5 @@
             </div>
         </div>
     </div>
-</div>            
+</div>                 
 @endsection    
