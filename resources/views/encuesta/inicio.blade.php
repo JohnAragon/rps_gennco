@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="row justify-content-center centered-view">
+<div class="row justify-content-center centered-view section-center">
     <div class="col-md-6">
         <div class="card">
             <div class="card-header center-paragraph">Encuesta de factores de Riesgo Psicosocial</div>

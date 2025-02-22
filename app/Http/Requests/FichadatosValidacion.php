@@ -72,7 +72,8 @@ class FichadatosValidacion extends FormRequest
             'horastrabajo.required' => 'Por favor indique cuantas horas la dia trabaja.',
             'horastrabajo.integer' => 'No digite letras solo números.',
             'horastrabajo.min' => 'Indique un número mayor a 1.',
-            'horastrabajo.max' => 'Indique un numero menor que 23.'
+            'horastrabajo.max' => 'Indique un numero menor que 23.',
+            'tiposalario.required'=>'Escoja un tipo de salario'
         ];
     }
 

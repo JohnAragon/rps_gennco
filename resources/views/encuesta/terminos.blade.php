@@ -2,7 +2,7 @@
 @section('content')
 <div class="row justify-content-center centered-view">
     <div class="col-md-10">
-        <div class="card">
+        <div class="card" style="height: auto">
             <div class="card-header text-center">
                 Terminos y condiciones de la aplicacion web
             </div>

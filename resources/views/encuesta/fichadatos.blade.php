@@ -5,22 +5,10 @@
                 <div class="card">
                     <div class="card-header center-paragraph-bold" class="center-paragraph">Ficha de datos</div>
                         <div class="card-body center-content" >
-                            <p class="justify-content">Las siguientes son algunas preguntas que se refieren a información general de usted o su
-                                ocupación.<br>
+                            <h6>Las siguientes son algunas preguntas que se refieren a información general de usted o su
+                                ocupación</h6>
                                 <form action="{{route('encuesta.fichadatos.confirmar')}}" method="POST">
                                     @csrf
-                                    @if (session('success'))
-                                        <div class="alert alert-success">
-                                            {{ session('success') }}
-                                        </div>
-                                    @endif
-
-                                    <!-- Display Error Message -->
-                                    @if (session('error'))
-                                        <div class="alert alert-danger">
-                                            {{ session('error') }}
-                                        </div>
-                                    @endif
                                     <div class="form-row">
                                         <div class="form-group">
                                             <label for="empresas">Empresa o entidad</label>

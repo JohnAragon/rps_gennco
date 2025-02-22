@@ -2,10 +2,10 @@
 @section('content')
 <div class="row justify-content-center centered-view">
 <div class="col-md-12">
-        <div class="card ">
+        <div class="card">
             <div class="card-header center-paragraph-bold">Encuesta tipo {{strtoupper($seccion->tipo)}} - {{$seccion->nombre}}</div>
 
-            <div class="card-body">
+            <div class="card-body center-content">
                 @if($seccion->route == 'fin-encuesta')
                     <form action="{{ route('empleado.logout') }}" method="POST">
                     @csrf
@@ -42,7 +42,7 @@
                     <h6>{{$seccion->enunciado}}</h6>
                     <div class="survey-table">
                                 <!-- Table Header -->
-                                <div class="table-header sticky-header">
+                                <div class="table-header">
                                     <div class="question-col">Pregunta</div>
                                     @foreach ($opciones as $opcion)
                                         <div class="options-col">{{$opcion->nombre}}</div>
@@ -66,12 +66,12 @@
                                                     {{ old($prefijoPreguntas.$pregunta->orden.$sufijoPreguntas) ==  $opcion->valor_encontrado ? 'checked' : '' }}>
                                             </div>
                                         @endforeach
-                                    </div>
                                         @error($prefijoPreguntas . $pregunta->orden .$sufijoPreguntas) 
                                             <div class="error-row">
                                                 <span class="error-message">{{ $message }}</span>
                                             </div>
                                         @enderror
+                                    </div>
                                          <!-- Hidden inputs -->
                                 @endforeach
                                 <input type="hidden" name="confirma" value="">
@@ -99,3 +99,6 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+        <script src="{{ asset('js/ocultar-errores.js') }}"></script>
+@endpush  
