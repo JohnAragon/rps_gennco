@@ -135,10 +135,11 @@ class EncuestasController extends Controller
     }
 
     public function mostrarPreguntas(Request $request){
-   
         $fichaDato = Fichadato::where('registro', Auth::user()->registro)->first();
         $secciones = Seccion::where('tipo', $request->tipo)->orderBy('orden','asc')->get();
+        $total = $secciones->count();
         $seccion = Seccion::where('tipo', $request->tipo)->where('route', $request->seccion)->first();
+        $avance = $seccion->orden;
         $preguntas = [];
         $prefijoPreguntas= null;
         $proximaSeccionId = $seccion->route != config('constants.SECCION_FIN_ENCUESTA') ? $secciones->get(($seccion->orden + 1) - 1)->route : config('constants.SECCION_FIN_ENCUESTA');  
@@ -151,9 +152,9 @@ class EncuestasController extends Controller
             
             $preguntas = $this->obtenerValorPreguntas($seccion); 
             
-            return view('encuesta.preguntas', compact('preguntas','seccion','fichaDato', 'proximaSeccionId', 'prefijoPreguntas', 'sufijoPreguntas', 'opciones'));
+            return view('encuesta.preguntas', compact('preguntas','seccion','fichaDato', 'proximaSeccionId', 'prefijoPreguntas', 'sufijoPreguntas', 'opciones','total','avance'));
         }
-        return view('encuesta.preguntas', compact('seccion','fichaDato', 'proximaSeccionId',));
+        return view('encuesta.sinpreguntas', compact('seccion','fichaDato', 'proximaSeccionId'));
     }
 
     public function confirmarPreguntas(PreguntasRequest $request){

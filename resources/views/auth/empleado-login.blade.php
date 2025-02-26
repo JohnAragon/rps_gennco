@@ -22,7 +22,7 @@
             <div class="form-group">
                 <button type="submit" class="submit-btn">Ingresar</button>
             </div>
-            <a href="{{ route('empleado.password.request') }}" class="link">¿Olvidaste tu contraseña?</a>
+            <a href="{{ route('empleado.password.email') }}" class="link">¿Olvidaste tu contraseña?</a>
         </form>
     </div>
 </div>

@@ -25,10 +25,10 @@ Route::get('empleado/login', [EmpleadoAuthController::class, 'showLoginForm'])->
 Route::post('empleado/login', [EmpleadoAuthController::class, 'login']);
 Route::post('empleado/logout', [EmpleadoAuthController::class, 'logout'])->name('empleado.logout');
 
-Route::get('empleado/password/reset', [EmpleadoAuthController::class, 'showLinkRequestForm'])->name('empleado.password.request');
+Route::get('empleado/password/email', [EmpleadoAuthController::class, 'showLinkEmailForm'])->name('empleado.password.email');
 Route::post('empleado/password/email', [EmpleadoAuthController::class, 'sendResetLinkEmail'])->name('empleado.password.email');
-Route::get('empleado/password/reset/{token}', [EmpleadoAuthController::class, 'showResetForm'])->name('empleado.password.reset');
-Route::post('empleado/password/reset', [EmpleadoAuthController::class, 'reset'])->name('empleado.password.update');
+Route::post('empleado/password/reset', [EmpleadoAuthController::class, 'updateResetForm'])->name('password.update');
+Route::get('empleado/password/reset/{token}', [EmpleadoAuthController::class, 'showResetForm'])->name('password.reset');
 
 Route::get('/inicio', [EncuestasController::class, 'index'])->name('encuesta.inicio')->middleware('auth.empleados');
 Route::get('/encuesta/advertencia', [EncuestasController::class, 'mostrarAdvertencia'])->name('encuesta.advertencia')->middleware('auth.empleados');
@@ -42,3 +42,4 @@ Route::post('/encuesta/fichadatos/confirmar',[EncuestasController::class, 'confi
 Route::get('/encuesta/municipios/{departamento}',[EncuestasController::class, 'obtenerMunicipios'])->name('encuesta.municipios')->middleware('auth.empleados');
 Route::get('/encuesta/preguntas/{tipo}/{seccion}',[EncuestasController::class, 'mostrarPreguntas'])->name('encuesta.preguntas')->middleware('auth.empleados');
 Route::post('/encuesta/preguntas/confirmar',[EncuestasController::class, 'confirmarPreguntas'])->name('encuesta.preguntas.confirmar')->middleware(['auth.empleados','alert']);
+

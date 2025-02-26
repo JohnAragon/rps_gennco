@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 use App\Models\Empleado;
+use App\Rules\ValidarEmailEmpleado;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -48,7 +50,7 @@ class EmpleadoAuthController extends Controller
         ])->first();
 
         Log::info('Empleado encontrado: ', ['empleado' => $empleado]);
-
+            
         if ($empleado && Auth::attempt([
             'cedula' => $credentials['cedula'], 
             'contrasena' => $credentials['contrasena'],
@@ -83,43 +85,60 @@ class EmpleadoAuthController extends Controller
 
         return redirect('/empleado/login');
     }
-
-    public function showLinkRequestForm()
-    {
-        return view('auth.empleado-password-request');
+    public function showLinkEmailForm(){
+        return view('auth.empleado-email');
     }
 
     public function sendResetLinkEmail(Request $request)
     {
+        
         $request->validate([
-            'cedula' => 'required|string|exists:empleados,cedula',
-            'contrasena' => 'required|string|exists:empleados,contrasena'
+            'correo' => ['required', 'email'],
+        ], [
+            'correo.required' => 'El campo de correo electrónico es obligatorio.',
+            'correo.email' => 'El formato del correo electrónico no es válido.',
         ]);
 
-        $status = Password::sendResetLink(
-            $request->only('cedula', 'contrasena')
+        $request->validate([
+            'correo' => new ValidarEmailEmpleado,
+        ]);
+
+        $response = Password::broker()->sendResetLink(
+            ['correo' => $request->correo]
         );
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
-            : back()->withErrors(['cedula' => __($status)]);
+        if ($response == Password::RESET_LINK_SENT) {
+            return redirect()->back()->with('success', 'Se ha enviado un enlace de recuperación a tu correo.');
+        } else {
+            return redirect()->back()->with('error', 'No se pudo enviar el enlace. Verifica tu correo.');
+        }
     }
+    
+
 
     public function showResetForm($token)
     {
         return view('auth.empleado-reset', ['token' => $token]);
     }
 
-    public function reset(Request $request)
+    public function updateResetForm(Request $request)
+
     {
         $request->validate([
-            'cedula' => 'required|string|exists:empleados,cedula',
-            'contrasena' => 'required|string|confirmed|min:6',
-            'token' => 'required',
+            'token'=>'required',
+            'correo' => 'required|email|exists:empleados,correo',
+            'contrasena' => 'required|confirmed|min:8',
+        ], [
+            'correo.required' => 'El campo de correo electrónico es obligatorio.',
+            'correo.email' => 'El formato del correo electrónico no es válido.',
+            'correo.exists' => 'El correo electrónico no esta en la base de datos.',
+            'contrasena.required' => 'El campo contraseña es requerido.',
+            'contrasena.confirmed' => 'La confirmación de contraseña no es identica.',
+            'contrasena.min' => 'La contraseña debe contener como minimo 8 caracteres entre letras, numeros y/o simbolos.',
         ]);
 
         $status = Password::reset(
-            $request->only('cedula', 'contrasena', 'token'),
+            $request->only('correo', 'contrasena', 'contrasena_confirmation', 'token'),
             function ($empleado, $contrasena) {
                 $empleado->forceFill([
                     'contrasena' => $contrasena,
@@ -129,8 +148,8 @@ class EmpleadoAuthController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('empleado.login')->with('status', __($status))
-            : back()->withErrors(['cedula' => [__($status)]]);
+            ? redirect()->route('empleado.login')->with('success', __($status))
+            : back()->withErrors(['correo' => [__($status)]]);
     }
 
     protected function redirectTo()

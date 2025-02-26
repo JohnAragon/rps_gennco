@@ -40,12 +40,12 @@
                                                 </div>
                                                 <div class="row" col=6>
                                                     <label>
-                                                        <input type="radio" id="sexo" name="sexo" value="MASCULINO" {{ old('genero') == 'MASCULINO' ? 'checked' : '' }}> Masculino
+                                                        <input type="radio" id="sexo" name="sexo" value="MASCULINO" {{ old('sexo') == 'MASCULINO' ? 'checked' : '' }}> Masculino
                                                     </label>
                                                 </div>
                                                 <div class="row" col=6>
                                                     <label>
-                                                        <input type="radio" id="sexo" name="sexo" value="FEMENINO" {{ old('genero') == 'FEMENINO' ? 'checked' : '' }}> Femenino
+                                                        <input type="radio" id="sexo" name="sexo" value="FEMENINO" {{ old('sexo') == 'FEMENINO' ? 'checked' : '' }}> Femenino
                                                     </label>
                                                 </div> 
                                                 @error('sexo') 

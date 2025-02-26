@@ -3,42 +3,20 @@
 <div class="row justify-content-center centered-view">
 <div class="col-md-12">
         <div class="card">
-            <div class="card-header center-paragraph-bold">Encuesta tipo {{strtoupper($seccion->tipo)}} - {{$seccion->nombre}}</div>
-
-            <div class="card-body center-content">
-                @if($seccion->route == 'fin-encuesta')
-                    <form action="{{ route('empleado.logout') }}" method="POST">
-                    @csrf
-                        
-                @else        
-                    <form method="POST" action="{{ route('encuesta.preguntas.confirmar')}}"> 
-                    @csrf    
-                @endif 
-                <div class="row center-content-questions">         
-                    @if($seccion->route == 'fin-encuesta')
-                        <P class="center-paragraph"><strong>¡GRACIAS POR SU PARTICIPACION!</strong></P>
-                        <p class="center-paragraph">{{$seccion->enunciado}}</p>
-                        <input class="submit-btn" type="submit" value="Salir">
-                    @elseif($seccion->route == 'confirma-atencion' || $seccion->route == 'confirma-jefe' )
-                                      
-                    <h5>{{$seccion->enunciado}}</h5>
-                    <input type="hidden" name="tipo" value="{{strtoupper($seccion->tipo)}}">
-                    <input type="hidden" name="rutaActual" value="{{ $seccion->route }}">
-                    <input type="hidden" name="proximaSeccionId" value="{{ $proximaSeccionId }}">
-                    <div class="col-6" >
-                            <button class="btn green btn-circle" name="confirma" type="submit" value="{{config('constants.USUARIO_APLICA')}}">
-                                <i class="fas fa-check"></i><!-- Icon for "Check" -->
-                            </button>
-                            <span style="vertical-align: button; margin-left: 10px;">SI</span>
-                    </div>
-                    <div class="col-6">
-                            <button class="btn red btn-circle" name="confirma" type="submit" value="{{config('constants.USUARIO_NO_APLICA')}}">
-                                <i class="fas fa-times"></i>  <!-- Icon for "X" -->
-                            </button>
-                            <span style="vertical-align: button; margin-left: 10px;">NO</span> 
-                    </div>        
+            <div class="card-header center-paragraph-bold">Encuesta tipo {{strtoupper($seccion->tipo)}} - {{$seccion->nombre}}
+                    @php
+                        $total = $total ?? 100; 
+                        $avance = $avance ?? 0;
+                    @endphp
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar" style="width: {{ ($avance / $total) * 100 }}%;"></div>
                 </div>
-                    @else 
+            </div>
+    
+            <div class="card-body center-content">
+                <form method="POST" action="{{ route('encuesta.preguntas.confirmar')}}"> 
+                    @csrf 
+                      
                     <h6>{{$seccion->enunciado}}</h6>
                     <div class="survey-table">
                                 <!-- Table Header -->
@@ -89,7 +67,6 @@
                                     <input type="hidden" name="rutaActual" value="{{ $seccion->route }}">
                                 
                                     <button type="submit" class="submit-btn">Continuar</button>
-                                @endif 
                             </div>                       
                         </div>
                     </form>
@@ -102,3 +79,46 @@
 @push('scripts')
         <script src="{{ asset('js/ocultar-errores.js') }}"></script>
 @endpush  
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let progressBar = document.getElementById("progressBar");
+        let total = {{ $total }};
+        let avance = {{ $avance }};
+
+        function actualizarProgreso(nuevoAvance) {
+            let porcentaje = (nuevoAvance / total) * 100;
+            progressBar.style.width = porcentaje + "%";
+        }
+    });
+</script>
+
+<style>
+    .progress-container {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 10px;
+        background-color: #d6dde5;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        width: 0;
+        height: 100%;
+        background-color: #0D47A1;
+        transition: width 0.5s ease-in-out;
+    }
+</style>
+
+
+
+
+
+
+

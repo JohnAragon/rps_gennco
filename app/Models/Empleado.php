@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+
 class Empleado extends Authenticatable
 {
-    use HasFactory, HasApiTokens;
+    use HasFactory, HasApiTokens, Notifiable;
     protected $table = 'empleados'; 
 
     protected $primaryKey = 'registro';
@@ -51,11 +53,15 @@ class Empleado extends Authenticatable
     protected $hidden = ['contrasena'];
 
     public function getAuthPassword() { return $this->contrasena; }
-    
+
     public function setContrasenaAttribute($value) { $this->attributes['contrasena'] = $value; }
 
     public function fichadato() {
         return $this->hasOne('App\Models\Fichadato','registro','registro');
     }
 
+    public function getEmailForPasswordReset()
+    {
+        return $this->correo;
+    }
 }
