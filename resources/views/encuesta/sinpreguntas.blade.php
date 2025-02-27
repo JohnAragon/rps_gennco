@@ -3,7 +3,7 @@
 <div class="row justify-content-center centered-view section-center">
     <div class="col-md-8">
         <div class="card"> 
-            <div class="card-header center-paragraph">Fin de la encuesta</div>
+            <div class="card-header center-paragraph">Encuesta tipo {{strtoupper($seccion->tipo)}} - {{$seccion->nombre}}</div>
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
                             @if($seccion->route == 'fin-encuesta')
@@ -20,7 +20,7 @@
                             @elseif($seccion->route == 'confirma-atencion' || $seccion->route == 'confirma-jefe' )
                                             
                             <h5>{{$seccion->enunciado}}</h5>
-                            <div class="row">
+                            <div class="row d-flex justify-content-center">
                                 <input type="hidden" name="tipo" value="{{strtoupper($seccion->tipo)}}">
                                 <input type="hidden" name="rutaActual" value="{{ $seccion->route }}">
                                 <input type="hidden" name="proximaSeccionId" value="{{ $proximaSeccionId }}">

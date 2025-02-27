@@ -8,9 +8,26 @@
                         $total = $total ?? 100; 
                         $avance = $avance ?? 0;
                     @endphp
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar" style="width: {{ ($avance / $total) * 100 }}%;"></div>
+                 <!-- Barra de progreso -->
+                    <!-- Barra de progreso mejorada -->
+                @if($total > 0)
+                <div style="padding: 15px 20px; display: flex; align-items: center; gap: 10px; background: #f8f9fa;">
+                    <!-- Contenedor personalizado para la barra -->
+                    <div style="flex-grow: 1; height: 10px; background: #d6dde5; border-radius: 5px; overflow: hidden; position: relative;">
+                        <div class="progress-bar" 
+                            style="width: {{ ($avance / $total) * 100 }}%;
+                                    height: 100%;
+                                    background: #0D47A1;
+                                    transition: width 0.5s ease-in-out;
+                                    border-radius: 5px;">
+                        </div>
+                    </div>
+                    <small style="color: #3b4a6b; font-weight: 500; white-space: nowrap;">
+                        {{ number_format(($avance / $total) * 100, 0) }}% Completado
+                    </small>
                 </div>
+                @endif
+            </div>
             </div>
     
             <div class="card-body center-content">

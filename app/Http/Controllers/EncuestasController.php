@@ -136,13 +136,14 @@ class EncuestasController extends Controller
 
     public function mostrarPreguntas(Request $request){
         $fichaDato = Fichadato::where('registro', Auth::user()->registro)->first();
-        $secciones = Seccion::where('tipo', $request->tipo)->orderBy('orden','asc')->get();
+        $secciones = $this->obtenerRutasValidas(strtoupper($request->tipo), Auth::user()->afrontamiento, Auth::user()->adicional);
         $total = $secciones->count();
-        $seccion = Seccion::where('tipo', $request->tipo)->where('route', $request->seccion)->first();
-        $avance = $seccion->orden;
+        $indiceSeccion = $this->obtenerIndiceAvance($secciones, $request->seccion); 
+        $seccion = $secciones->get($indiceSeccion);
+        $avance = $indiceSeccion + 1;
         $preguntas = [];
         $prefijoPreguntas= null;
-        $proximaSeccionId = $seccion->route != config('constants.SECCION_FIN_ENCUESTA') ? $secciones->get(($seccion->orden + 1) - 1)->route : config('constants.SECCION_FIN_ENCUESTA');  
+        $proximaSeccionId = $seccion->route != config('constants.SECCION_FIN_ENCUESTA') ? $secciones->get(($avance + 1) - 1)->route : config('constants.SECCION_FIN_ENCUESTA');  
         $incluyePreguntas = $this->esSeccionConPreguntas($seccion->route);
         
         if($incluyePreguntas){
@@ -203,7 +204,7 @@ class EncuestasController extends Controller
             }
              
             if($request->input('confirma') != null){
-             
+            
                 if($request->rutaActual == config('constants.SECCION_CONFIRMA_ATENCION')){
                     $proximaSeccionId = $request->input('confirma') == config('constants.USUARIO_APLICA') ? $request->input('proximaSeccionId') : config('constants.SECCION_CONFIRMA_JEFE');
                     if($proximaSeccionId == config('constants.SECCION_CONFIRMA_JEFE')){
@@ -217,9 +218,7 @@ class EncuestasController extends Controller
                 }
 
                 if($request->rutaActual == config('constants.SECCION_CONFIRMA_JEFE')){
-
-                    $proximaSeccionId = $request->input('confirma') == config('constants.USUARIO_APLICA') ? $request->input('proximaSeccionId') : config('constants.SECCION_CONDICIONES_VIVIENDA)');
-
+                    $proximaSeccionId = $request->input('confirma') == config('constants.USUARIO_APLICA') ? $request->input('proximaSeccionId') : config('constants.SECCION_CONDICIONES_VIVIENDA');
                     $fichaDato->update([
                         'soyjefe' => $request->input('confirma'),
                         'tablacontestada' => $proximaSeccionId
@@ -414,6 +413,7 @@ class EncuestasController extends Controller
     }
 
     public function obtenerQueryPreguntas($tipo, $seccion_id, $tipoModelo, $ruta){
+        
         if($tipo == config('constants.TIPO_B')){
             switch ($ruta) {
                 case config('constants.SECCION_CONDICIONES_VIVIENDA') :
@@ -443,6 +443,37 @@ class EncuestasController extends Controller
         }
         
         return $tipoModelo::where('seccion_id', $seccion_id)->with(['opciones.valor'])->orderBy('orden','asc')->get();
+    }
+
+    public function obtenerIndiceAvance($secciones, $ruta){
+       
+        $indice = $secciones->search(function ($seccion) use ($ruta) {
+            return $seccion['route'] == $ruta;
+        });
+
+        return $indice;
+    }
+
+    public function obtenerRutasValidas($tipo, $afrontamiento, $personalidad)
+    {
+        $secciones = Seccion::where('tipo', $tipo)->orderBy('orden','asc')->get();
+        $rutasAEliminar = collect();
+
+        if ($afrontamiento == config('constants.USUARIO_NIEGA')) {
+            $rutasAEliminar->push(config('constants.SECCION_AFRONTAMIENTO_I'));
+            $rutasAEliminar->push(config('constants.SECCION_AFRONTAMIENTO_II'));
+            $rutasAEliminar->push(config('constants.SECCION_AFRONTAMIENTO_III'));
+        }
+
+        if ($personalidad == config('constants.USUARIO_NIEGA')) {
+            $rutasAEliminar->push(config('constants.SECCION_PERSONALIDAD'));
+        }
+
+        $secciones = $secciones->reject(function ($seccion) use ($rutasAEliminar) {
+            return $rutasAEliminar->contains($seccion['route']);
+        })->values();
+
+        return $secciones;
     }
 }
     
