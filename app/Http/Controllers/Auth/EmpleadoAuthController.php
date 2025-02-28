@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
 use App\Models\Empleado;
 use App\Rules\ValidarEmailEmpleado;
@@ -30,37 +31,37 @@ class EmpleadoAuthController extends Controller
     {
 
         $rules = [
-            'cedula' => ['required', 'string', 'min:4', 'max:20'],
-            'contrasena' => ['required', 'string', 'min:4', 'max:20'],
+            'cedula' => ['required'],
+            'contrasena' => ['required'],
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages =[
+            'cedula.required' => 'La cedula no debe estar vacia.',
+            'contrasena.required' => 'La contraseña no debe estar vacia',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
         $credentials = $request->only('cedula', 'contrasena');
-
+     
         $empleado = Empleado::where([
             'cedula' => $credentials['cedula'],
-            'contrasena' => $credentials['contrasena'],
             'habilitado' => 'habilitado',
             'llave' => 'nada'
         ])->first();
 
         Log::info('Empleado encontrado: ', ['empleado' => $empleado]);
             
-        if ($empleado && Auth::attempt([
-            'cedula' => $credentials['cedula'], 
-            'contrasena' => $credentials['contrasena'],
-            'registro' => $empleado['registro']
-        ])) {
+        if ($empleado && Hash::check($request->contrasena, $empleado->contrasena) && $empleado->habilitado === 'habilitado' && $empleado->llave === 'nada') {
+            Auth::login($empleado);
             session(['authenticated_empleado_id' => $empleado->registro]);
             return redirect()->intended('/inicio');
         } else {
             $empleado = Empleado::where('cedula', $request->cedula)
-                ->where('contrasena', $request->contrasena)
                 ->where('habilitado', 'completo')
                 ->where('llave', 'terminado')
                 ->first();
@@ -141,7 +142,7 @@ class EmpleadoAuthController extends Controller
             $request->only('correo', 'contrasena', 'contrasena_confirmation', 'token'),
             function ($empleado, $contrasena) {
                 $empleado->forceFill([
-                    'contrasena' => $contrasena,
+                    'contrasena' => Hash::make($contrasena),
                     'remember_token' => Str::random(60),
                 ])->save();
             }

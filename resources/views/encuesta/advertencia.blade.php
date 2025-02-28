@@ -14,29 +14,20 @@
             Sus respuestas seran manejadas de forma <b>absolutamente confidencial</b>. </p>
           
           <p class="center-paragraph">
-            <strong>
-              Su registro será el número {{Auth::user()->registro}}. 
-            </strong>
-            <br>
-            
-            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" value="{{config('constants.USUARIO_CONFIRMA')}}" id="terminos"  required="">
-
+            <strong> Su registro será el número {{Auth::user()->registro}}. </strong>
+          </p>
+          <p class="center-paragraph">            
+            <input title="Debe aceptar términos y condiciones" type="radio" name="terminos" value="{{config('constants.USUARIO_CONFIRMA')}}" id="terminos">
             <a href="{{route('encuesta.terminos')}}">
               <span>
               Acepto los Terminos y Condiciones
             </span>
             </a>
-            <br>
             <input class="submit-btn" type="submit" value="Ir a la encuesta">
-            <br>
-          (Consentimiento informado).
+             (Consentimiento informado).
           </p>
           <p class="justify-paragraph">
-            Contacte con nosotros al correo
-            <span style="color:#33F">
-              webmaster@gennco.com.co
-            </span>
-            , si experimenta problemas o no tiene datos de acceso.
+            Contacte con nosotros al correo <span style="color:#33F"> webmaster@gennco.com.co</span>, si experimenta problemas o no tiene datos de acceso.
           </p>
         </form>
       </div>

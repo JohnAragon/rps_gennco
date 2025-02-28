@@ -7,14 +7,14 @@
             @csrf
             <div class="form-group">
                 <label for="cedula">Cedula:</label>
-                <input type="text" id="cedula" name="cedula" required>
+                <input type="text" id="cedula" name="cedula">
                 @error('cedula')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>
             <div class="form-group">
                 <label for="contrasena">Contraseña:</label>
-                <input type="password" id="contrasena" name="contrasena" required>
+                <input type="password" id="contrasena" name="contrasena">
                 @error('contrasena')
                     <span class="error-message">{{ $message }}</span>
                 @enderror

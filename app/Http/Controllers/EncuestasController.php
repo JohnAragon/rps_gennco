@@ -61,6 +61,21 @@ class EncuestasController extends Controller
 
     public function aceptarTerminos(Request $request){
         $user_registro = Auth::user()->registro;
+
+        $rules = [
+            'terminos' => ['required'],
+        ];
+
+        $messages =[
+            'terminos.required' => 'Debe aceptar terminos y condiciones.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
         try{
             Empleado::where('registro',$user_registro)
             ->update(['terminos'=>$request->input('terminos')]); 
