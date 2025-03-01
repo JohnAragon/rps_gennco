@@ -59,6 +59,10 @@ class EncuestasController extends Controller
         return view('encuesta.finencuesta');
     }
 
+    public function noPermitido(){
+        return view('encuesta.noPermitido');
+    }
+
     public function aceptarTerminos(Request $request){
         $user_registro = Auth::user()->registro;
 
@@ -91,24 +95,25 @@ class EncuestasController extends Controller
     public function aceptarConsentimiento(Request $request){
         $user_registro = Auth::user()->registro;
         try{
-            Empleado::where('registro',$user_registro)
-                ->update([
-                        'consentimiento' => $request->input('consentimiento'),
-                        'habilitado' => config('constants.USUARIO_COMPLETO'),
-                        'llave' => config('constants.USUARIO_LLAVE')
-                    ]);      
-             
+            $empleado =  Empleado::where('registro',$user_registro);
+            if($request->consentimiento == config('constants.USUARIO_CONFIRMA')){
+                $empleado->update([
+                            'consentimiento' => $request->input('consentimiento')
+                        ]);
+                         
+                return redirect()->route('encuesta.fichadatos');            
+            }else{
+                $empleado->update([
+                    'consentimiento' => $request->input('consentimiento'),
+                    'habilitado' => config('constants.USUARIO_COMPLETO'),
+                    'llave' => config('constants.USUARIO_LLAVE')
+                ]); 
+                return redirect()->intended('encuesta/no-consentimiento');    
+            } 
         }catch(ModelNotFoundException $exception){
             Log::error('Empleado no encontrado: ', $exception);
             return back()->withError(config('MENSAJE_ERROR_MODELO_NOT_FOUND'))->withInput();
         }
-
-        if($request->consentimiento == config('constants.USUARIO_CONFIRMA')){
-            return redirect()->route('encuesta.fichadatos');
-        }else{
-          return redirect()->intended('encuesta/no-consentimiento');
-    
-       }
     } 
 
     public function mostrarFichadatos()
@@ -149,8 +154,13 @@ class EncuestasController extends Controller
 
     }
 
-    public function mostrarPreguntas(Request $request){
+    public function mostrarPreguntas(Request $request){    
         $fichaDato = Fichadato::where('registro', Auth::user()->registro)->first();
+        if((strtoupper($request->tipo)) != Auth::user()->nivelSeguridad){
+            $ruta = $fichaDato->tablacontestada;
+            $tipo = Auth::user()->nivelSeguridad;
+            return redirect()->route('encuesta.preguntas.noPermitido')->with(['tipo' => strtolower($tipo), 'ruta' => $ruta]);
+        }
         $secciones = $this->obtenerRutasValidas(strtoupper($request->tipo), Auth::user()->afrontamiento, Auth::user()->adicional);
         $total = $secciones->count();
         $indiceSeccion = $this->obtenerIndiceAvance($secciones, $request->seccion); 
@@ -490,5 +500,6 @@ class EncuestasController extends Controller
 
         return $secciones;
     }
+
 }
     

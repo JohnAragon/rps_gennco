@@ -42,4 +42,5 @@ Route::post('/encuesta/fichadatos/confirmar',[EncuestasController::class, 'confi
 Route::get('/encuesta/municipios/{departamento}',[EncuestasController::class, 'obtenerMunicipios'])->name('encuesta.municipios')->middleware('auth.empleados');
 Route::get('/encuesta/preguntas/{tipo}/{seccion}',[EncuestasController::class, 'mostrarPreguntas'])->name('encuesta.preguntas')->middleware('auth.empleados');
 Route::post('/encuesta/preguntas/confirmar',[EncuestasController::class, 'confirmarPreguntas'])->name('encuesta.preguntas.confirmar')->middleware(['auth.empleados','alert']);
+Route::get('/encuesta/preguntas/noPermitido',[EncuestasController::class, 'noPermitido'])->name('encuesta.preguntas.noPermitido')->middleware(['auth.empleados','alert']);
 
